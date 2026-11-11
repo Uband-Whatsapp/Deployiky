@@ -10,836 +10,354 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08060d;
-  --panel:#120e1b;
-  --panel-2:#171122;
-  --panel-3:#1e1729;
-  --line:#2a2137;
-  --line-soft:#221a2e;
-  --text:#f5f2fa;
-  --text-2:#b9b0c9;
-  --muted:#8b8398;
-  --accent:#a855f7;
-  --accent-2:#7c3aed;
-  --accent-soft:#d8b4fe;
-  --green:#34d399;
-  --red:#fb7185;
-  --yellow:#fbbf24;
+  --bg:#08060d;--panel:#120e1b;--panel-2:#171122;--panel-3:#1e1729;
+  --line:#2a2137;--line-soft:#221a2e;
+  --text:#f5f2fa;--text-2:#b9b0c9;--muted:#8b8398;
+  --accent:#a855f7;--accent-2:#7c3aed;--accent-soft:#d8b4fe;
+  --green:#34d399;--red:#fb7185;--yellow:#fbbf24;
   --shadow:0 24px 50px -30px rgba(0,0,0,.95);
 }
-
 *{box-sizing:border-box}
-
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#2a2137;border-radius:10px;border:2px solid var(--bg)}
 ::-webkit-scrollbar-thumb:hover{background:#3d2f52}
-
-html{scroll-behavior:smooth}
-
 body{
   margin:0;
-  background:
-    radial-gradient(900px 620px at 10% -12%, rgba(124,58,237,.20), transparent 62%),
-    radial-gradient(820px 520px at 102% -4%, rgba(168,85,247,.13), transparent 58%),
-    var(--bg);
-  background-attachment:fixed;
-  color:var(--text);
+  background:radial-gradient(900px 620px at 10% -12%,rgba(124,58,237,.20),transparent 62%),
+             radial-gradient(820px 520px at 102% -4%,rgba(168,85,247,.13),transparent 58%),
+             var(--bg);
+  background-attachment:fixed;color:var(--text);
   font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
-  font-size:14px;
-  line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+  font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
 }
-
-button,input,select{font:inherit}
+button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 a{color:inherit}
 .hidden{display:none!important}
 button:disabled{opacity:.45;cursor:not-allowed}
 
-/* ================= LOGIN ================= */
-#loginPage{
-  min-height:100vh;
-  display:grid;
-  place-items:center;
-  padding:24px;
-}
-
-.login-box{
-  position:relative;
-  width:100%;
-  max-width:404px;
-  padding:34px 30px 30px;
+/* ============ LOGIN ============ */
+#loginPage{min-height:100vh;display:grid;place-items:center;padding:24px}
+.login-box{position:relative;width:100%;max-width:404px;padding:34px 30px 30px;
   background:linear-gradient(180deg,rgba(32,24,44,.94),rgba(16,12,24,.96));
-  border:1px solid var(--line);
-  border-radius:20px;
-  box-shadow:0 40px 80px -40px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,.05);
-  backdrop-filter:blur(14px);
-}
-
-.login-box::before{
-  content:"";
-  position:absolute;
-  inset:-1px -1px auto -1px;
-  height:2px;
-  border-radius:20px 20px 0 0;
-  background:linear-gradient(90deg,transparent,rgba(168,85,247,.85),transparent);
-}
-
-.login-brand{
-  display:flex;
-  align-items:center;
-  gap:13px;
-  margin-bottom:26px;
-}
-
-.login-brand-name{
-  font-size:15px;
-  font-weight:800;
-  letter-spacing:.3px;
-}
-
-.login-brand-sub{
-  font-size:10.5px;
-  color:var(--muted);
-  letter-spacing:1.2px;
-  text-transform:uppercase;
-  margin-top:3px;
-}
-
-.logo{
-  width:46px;
-  height:46px;
-  flex-shrink:0;
-  display:grid;
-  place-items:center;
-  border-radius:14px;
-  background:linear-gradient(140deg,#b06bff,#6d28d9);
-  color:#fff;
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:-.5px;
-  box-shadow:0 10px 24px -10px rgba(168,85,247,.95), inset 0 1px 0 rgba(255,255,255,.3);
-}
-
-.login-box h1{
-  font-size:22px;
-  font-weight:800;
-  letter-spacing:-.3px;
-  margin:0 0 7px;
-}
-
+  border:1px solid var(--line);border-radius:20px;
+  box-shadow:0 40px 80px -40px rgba(0,0,0,1),inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter:blur(14px)}
+.login-box::before{content:"";position:absolute;inset:-1px -1px auto -1px;height:2px;
+  border-radius:20px 20px 0 0;background:linear-gradient(90deg,transparent,rgba(168,85,247,.85),transparent)}
+.login-brand{display:flex;align-items:center;gap:13px;margin-bottom:26px}
+.login-brand-name{font-size:15px;font-weight:800;letter-spacing:.3px}
+.login-brand-sub{font-size:10.5px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-top:3px}
+.logo{width:46px;height:46px;flex-shrink:0;display:grid;place-items:center;border-radius:14px;
+  background:linear-gradient(140deg,#b06bff,#6d28d9);color:#fff;font-size:20px;font-weight:800;
+  letter-spacing:-.5px;box-shadow:0 10px 24px -10px rgba(168,85,247,.95),inset 0 1px 0 rgba(255,255,255,.3)}
+.login-box h1{font-size:22px;font-weight:800;letter-spacing:-.3px;margin:0 0 7px}
 .login-box .muted{font-size:12.5px;line-height:1.6;margin:0}
-
 .muted{color:var(--muted)}
 .small{font-size:11.5px}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin:18px 0;
-}
-
-label{
-  font-size:11.5px;
-  font-weight:600;
-  letter-spacing:.4px;
-  text-transform:uppercase;
-  color:#a89cba;
-}
-
-input,select{
-  width:100%;
-  min-width:0;
-  background:#0a0812;
-  color:var(--text);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px 14px;
-  outline:none;
-  font-size:13.5px;
-  transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
-}
-
+.field{display:flex;flex-direction:column;gap:8px;margin:18px 0}
+label{font-size:11.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:#a89cba}
+input,select,textarea{width:100%;min-width:0;background:#0a0812;color:var(--text);
+  border:1px solid var(--line);border-radius:10px;padding:12px 14px;outline:none;
+  font-size:13.5px;transition:all .18s ease}
 input::placeholder{color:#5f5770}
-
-input:focus,select:focus{
-  border-color:var(--accent);
-  background:#0d0a16;
-  box-shadow:0 0 0 3px rgba(168,85,247,.16);
-}
-
+input:focus,select:focus,textarea:focus{border-color:var(--accent);background:#0d0a16;
+  box-shadow:0 0 0 3px rgba(168,85,247,.16)}
 input:disabled{opacity:.6;cursor:not-allowed;color:var(--muted)}
+select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8398' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;cursor:pointer}
+.form-error{color:var(--red);margin:10px 0 0;min-height:16px;font-weight:500}
 
-select{
-  appearance:none;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8398' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-  background-repeat:no-repeat;
-  background-position:right 13px center;
-  padding-right:36px;
-  cursor:pointer;
-}
-
-.form-error{
-  color:var(--red);
-  margin:14px 0 0;
-  min-height:16px;
-  font-weight:500;
-}
-
-/* ================= BUTTONS ================= */
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  background:var(--panel-3);
-  border:1px solid var(--line);
-  color:var(--text-2);
-  border-radius:10px;
-  padding:10px 14px;
-  font-size:12.5px;
-  font-weight:600;
-  text-decoration:none;
-  white-space:nowrap;
-  transition:background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease;
-}
-
-.btn:hover{
-  background:#251c34;
-  border-color:#463760;
-  color:var(--text);
-  transform:translateY(-1px);
-}
-
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--panel-3);border:1px solid var(--line);color:var(--text-2);
+  border-radius:10px;padding:10px 14px;font-size:12.5px;font-weight:600;
+  text-decoration:none;white-space:nowrap;transition:all .16s ease}
+.btn:hover{background:#251c34;border-color:#463760;color:var(--text);transform:translateY(-1px)}
 .btn:active{transform:translateY(0)}
-
 .btn svg{width:14px;height:14px;flex-shrink:0}
-
-.btn.primary{
-  background:linear-gradient(135deg,#a855f7,#7c3aed);
-  border-color:transparent;
-  color:#fff;
-  box-shadow:0 10px 22px -12px rgba(168,85,247,.95);
-}
-
-.btn.primary:hover{
-  filter:brightness(1.09);
-  box-shadow:0 14px 28px -12px rgba(168,85,247,1);
-}
-
-.btn.danger{color:#ff9aa6}
-.btn.danger:hover{background:#331620;border-color:#5d2b3a;color:#ffb3bd}
-
+.btn.primary{background:linear-gradient(135deg,#a855f7,#7c3aed);border-color:transparent;
+  color:#fff;box-shadow:0 10px 22px -12px rgba(168,85,247,.95)}
+.btn.primary:hover{filter:brightness(1.09);box-shadow:0 14px 28px -12px rgba(168,85,247,1)}
+.btn.danger{background:linear-gradient(135deg,#ef4444,#b91c1c);border-color:transparent;
+  color:#fff;box-shadow:0 10px 22px -12px rgba(239,68,68,.9)}
+.btn.danger:hover{filter:brightness(1.09)}
+.btn.ghost-danger{background:transparent;color:#ff9aa6;border-color:rgba(251,113,133,.3)}
+.btn.ghost-danger:hover{background:rgba(251,113,133,.1);border-color:rgba(251,113,133,.5)}
 .btn.small{padding:7px 11px;font-size:11.5px;border-radius:8px}
 .btn.small svg{width:12px;height:12px}
 .btn.block{width:100%;padding:12px 14px;font-size:13.5px}
 
-/* ================= LAYOUT ================= */
+/* ============ LAYOUT ============ */
 .layout{display:flex;min-height:100vh}
-
-.sidebar{
-  width:236px;
-  flex-shrink:0;
-  position:sticky;
-  top:0;
-  height:100vh;
-  overflow-y:auto;
+.sidebar{width:236px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
   background:linear-gradient(180deg,rgba(14,11,21,.98),rgba(10,8,16,.98));
-  border-right:1px solid var(--line);
-  padding:24px 14px 20px;
-  display:flex;
-  flex-direction:column;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:0 6px 26px;
-}
-
+  border-right:1px solid var(--line);padding:24px 14px 20px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:12px;padding:0 6px 26px}
 .brand .logo{width:38px;height:38px;font-size:17px;border-radius:12px}
-
 .brand-title{font-size:14px;font-weight:800;letter-spacing:.2px}
 .brand-sub{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1px;text-transform:uppercase}
-
-.nav-label{
-  padding:10px 10px 8px;
-  color:#6d647c;
-  font-size:9.5px;
-  font-weight:700;
-  letter-spacing:1.4px;
-  text-transform:uppercase;
-}
-
-.nav-btn{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:11px 12px;
-  border:1px solid transparent;
-  border-radius:10px;
-  background:transparent;
-  color:var(--muted);
-  text-align:left;
-  width:100%;
-  margin-bottom:4px;
-  font-size:13px;
-  font-weight:600;
-  transition:all .16s ease;
-}
-
+.nav-label{padding:10px 10px 8px;color:#6d647c;font-size:9.5px;font-weight:700;
+  letter-spacing:1.4px;text-transform:uppercase}
+.nav-btn{display:flex;align-items:center;gap:11px;padding:11px 12px;border:1px solid transparent;
+  border-radius:10px;background:transparent;color:var(--muted);text-align:left;width:100%;
+  margin-bottom:4px;font-size:13px;font-weight:600;transition:all .16s ease}
 .nav-btn:hover{background:#191324;color:var(--text)}
-
-.nav-btn.active{
-  background:linear-gradient(135deg,rgba(168,85,247,.24),rgba(124,58,237,.10));
-  border-color:rgba(168,85,247,.34);
-  color:#ecd9ff;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
-}
-
-.nav-icon{
-  width:18px;
-  height:18px;
-  flex-shrink:0;
-  opacity:.9;
-}
-
-.sidebar-foot{
-  margin-top:auto;
-  border-top:1px solid var(--line-soft);
-  padding:16px 8px 0;
-  color:var(--muted);
-  font-size:10.5px;
-  line-height:1.9;
-}
-
+.nav-btn.active{background:linear-gradient(135deg,rgba(168,85,247,.24),rgba(124,58,237,.10));
+  border-color:rgba(168,85,247,.34);color:#ecd9ff;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.nav-icon{width:18px;height:18px;flex-shrink:0;opacity:.9}
+.sidebar-foot{margin-top:auto;border-top:1px solid var(--line-soft);padding:16px 8px 0;
+  color:var(--muted);font-size:10.5px;line-height:1.9}
 .sidebar-foot strong{color:var(--text-2);font-weight:700;display:block;margin-bottom:2px}
 .sidebar-foot span{color:#6d647c}
-
 .main{flex:1;min-width:0;display:flex;flex-direction:column}
-
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:25;
-  min-height:68px;
-  padding:14px 28px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  background:rgba(8,6,13,.78);
-  backdrop-filter:blur(16px);
-}
-
-.topbar h2{
-  font-size:16px;
-  font-weight:700;
-  margin:0;
-  letter-spacing:-.2px;
-}
-
+.topbar{position:sticky;top:0;z-index:25;min-height:68px;padding:14px 28px;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;
+  justify-content:space-between;gap:14px;background:rgba(8,6,13,.78);backdrop-filter:blur(16px)}
+.topbar h2{font-size:16px;font-weight:700;margin:0;letter-spacing:-.2px}
 .top-actions{display:flex;align-items:center;gap:12px}
-
-.connection{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:11px;
-  font-weight:600;
-  border:1px solid rgba(52,211,153,.28);
-  background:rgba(52,211,153,.08);
-  color:#6ee7b7;
-  white-space:nowrap;
-}
-
-.connection::before{
-  content:"";
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:currentColor;
-  box-shadow:0 0 0 0 currentColor;
-  animation:pulse 2s infinite;
-}
-
-.connection[data-state="wait"]{
-  border-color:rgba(251,191,36,.28);
-  background:rgba(251,191,36,.08);
-  color:#fcd34d;
-}
-
-.connection[data-state="error"]{
-  border-color:rgba(251,113,133,.3);
-  background:rgba(251,113,133,.09);
-  color:#fda4af;
-}
-
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}
-  70%{box-shadow:0 0 0 6px rgba(52,211,153,0)}
-  100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}
-}
-
-.content{
-  width:100%;
-  max-width:1350px;
-  margin:0 auto;
-  padding:28px;
-  flex:1;
-}
-
+.connection{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;
+  border-radius:999px;font-size:11px;font-weight:600;
+  border:1px solid rgba(52,211,153,.28);background:rgba(52,211,153,.08);
+  color:#6ee7b7;white-space:nowrap}
+.connection::before{content:"";width:6px;height:6px;border-radius:50%;
+  background:currentColor;animation:pulse 2s infinite}
+.connection[data-state="wait"]{border-color:rgba(251,191,36,.28);
+  background:rgba(251,191,36,.08);color:#fcd34d}
+.connection[data-state="error"]{border-color:rgba(251,113,133,.3);
+  background:rgba(251,113,133,.09);color:#fda4af}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}
+  70%{box-shadow:0 0 0 6px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+.content{width:100%;max-width:1350px;margin:0 auto;padding:28px;flex:1}
 .view{display:none}
 .view.active{display:block;animation:fadeUp .28s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
-}
-
-/* ================= HEADINGS & STATS ================= */
-.heading{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:22px;
-}
-
-.heading h1{
-  font-size:23px;
-  font-weight:800;
-  letter-spacing:-.5px;
-  margin:0 0 6px;
-}
-
-.heading p{
-  font-size:12.5px;
-  color:var(--muted);
-  margin:0;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px;
-  margin-bottom:24px;
-}
-
-.stat{
-  position:relative;
-  padding:18px;
-  background:linear-gradient(180deg,rgba(30,23,41,.78),rgba(16,12,24,.78));
-  border:1px solid var(--line);
-  border-radius:14px;
-  overflow:hidden;
-  transition:border-color .2s ease, transform .2s ease;
-}
-
-.stat::after{
-  content:"";
-  position:absolute;
-  inset:0 0 auto 0;
-  height:2px;
-  background:linear-gradient(90deg,transparent,rgba(168,85,247,.65),transparent);
-}
-
+/* ============ HEADINGS & STATS ============ */
+.heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.heading h1{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:0 0 6px}
+.heading p{font-size:12.5px;color:var(--muted);margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.stat{position:relative;padding:18px;background:linear-gradient(180deg,rgba(30,23,41,.78),rgba(16,12,24,.78));
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:all .2s ease}
+.stat::after{content:"";position:absolute;inset:0 0 auto 0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(168,85,247,.65),transparent)}
 .stat:hover{border-color:#3d2f52;transform:translateY(-2px)}
-
 .stat-top{display:flex;align-items:center;gap:9px}
-
-.stat-ico{
-  width:26px;
-  height:26px;
-  display:grid;
-  place-items:center;
-  border-radius:8px;
-  background:rgba(168,85,247,.14);
-  color:#c98cff;
-  flex-shrink:0;
-}
-
+.stat-ico{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;
+  background:rgba(168,85,247,.14);color:#c98cff;flex-shrink:0}
 .stat-ico svg{width:14px;height:14px}
-
 .stat-ico.green{background:rgba(52,211,153,.13);color:#4ade80}
 .stat-ico.red{background:rgba(251,113,133,.13);color:#fb7185}
+.stat-label{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)}
+.stat-number{font-size:26px;font-weight:800;letter-spacing:-.8px;margin-top:12px;line-height:1}
 
-.stat-label{
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.4px;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-
-.stat-number{
-  font-size:26px;
-  font-weight:800;
-  letter-spacing:-.8px;
-  margin-top:12px;
-  line-height:1;
-}
-
-/* ================= PANELS ================= */
-.panel{
-  background:linear-gradient(180deg,rgba(23,17,34,.85),rgba(16,12,24,.9));
-  border:1px solid var(--line);
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-}
-
-.panel-head{
-  padding:16px 18px;
-  border-bottom:1px solid var(--line-soft);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-  background:rgba(255,255,255,.015);
-}
-
-.panel-head h3{
-  margin:0;
-  font-size:13px;
-  font-weight:700;
-  letter-spacing:.2px;
-}
-
+/* ============ PANELS ============ */
+.panel{background:linear-gradient(180deg,rgba(23,17,34,.85),rgba(16,12,24,.9));
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.panel-head{padding:16px 18px;border-bottom:1px solid var(--line-soft);
+  display:flex;justify-content:space-between;align-items:center;gap:14px;
+  background:rgba(255,255,255,.015)}
+.panel-head h3{margin:0;font-size:13px;font-weight:700;letter-spacing:.2px}
 .panel-body{padding:20px}
 
+/* ============ SEARCH ============ */
 .search-wrap{position:relative;width:100%;max-width:280px}
-.search-wrap svg{
-  position:absolute;
-  left:12px;
-  top:50%;
-  transform:translateY(-50%);
-  width:14px;
-  height:14px;
-  color:var(--muted);
-  pointer-events:none;
-}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:14px;height:14px;color:var(--muted);pointer-events:none}
+.search{max-width:none;padding:9px 12px 9px 34px;font-size:12.5px;border-radius:10px;background:#0a0812}
 
-.search{
-  max-width:none;
-  padding:9px 12px 9px 34px;
-  font-size:12.5px;
-  border-radius:10px;
-  background:#0a0812;
-}
-
-/* ================= PROJECT CARDS ================= */
-.project{
-  padding:18px 20px;
-  border-bottom:1px solid var(--line-soft);
-  transition:background .16s ease;
-}
-
+/* ============ PROJECT CARDS ============ */
+.project{padding:18px 20px;border-bottom:1px solid var(--line-soft);transition:background .16s ease}
 .project:last-child{border-bottom:0}
 .project:hover{background:rgba(255,255,255,.018)}
-
-.project-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:14px;
-}
-
+.project-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
 .project-head{display:flex;align-items:center;gap:12px;min-width:0}
-
-.project-avatar{
-  width:38px;
-  height:38px;
-  flex-shrink:0;
-  display:grid;
-  place-items:center;
-  border-radius:11px;
-  font-size:15px;
-  font-weight:800;
-  color:#e5d1ff;
+.project-avatar{width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;
+  border-radius:11px;font-size:15px;font-weight:800;color:#e5d1ff;
   background:linear-gradient(140deg,rgba(168,85,247,.28),rgba(124,58,237,.14));
-  border:1px solid rgba(168,85,247,.28);
-}
-
-.project-name{
-  font-weight:700;
-  font-size:14px;
-  letter-spacing:-.1px;
-  overflow-wrap:anywhere;
-}
-
-.project-id{
-  font-size:10.5px;
-  color:#6d647c;
-  margin-top:4px;
-  font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
-  overflow-wrap:anywhere;
-}
-
-.project-meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:14px;
-}
-
-.meta-item{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:5px 10px;
-  border-radius:8px;
-  background:#0c0913;
-  border:1px solid var(--line-soft);
-  font-size:11px;
-  color:var(--muted);
-  max-width:100%;
-  overflow-wrap:anywhere;
-}
-
+  border:1px solid rgba(168,85,247,.28)}
+.project-name{font-weight:700;font-size:14px;letter-spacing:-.1px;overflow-wrap:anywhere}
+.project-id{font-size:10.5px;color:#6d647c;margin-top:4px;
+  font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;overflow-wrap:anywhere}
+.project-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.meta-item{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;
+  border-radius:8px;background:#0c0913;border:1px solid var(--line-soft);
+  font-size:11px;color:var(--muted);max-width:100%;overflow-wrap:anywhere}
 .meta-item b{color:var(--text-2);font-weight:600;flex-shrink:0}
+.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
 
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  margin-top:14px;
-}
+/* ============ TAGS ============ */
+.tag{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;
+  font-size:10.5px;font-weight:700;letter-spacing:.2px;white-space:nowrap;
+  background:rgba(168,85,247,.13);color:#d8b4fe;border:1px solid rgba(168,85,247,.24)}
+.tag.green{background:rgba(52,211,153,.12);color:#6ee7b7;border-color:rgba(52,211,153,.26)}
+.tag.red{background:rgba(251,113,133,.12);color:#fda4af;border-color:rgba(251,113,133,.28)}
+.tag.yellow{background:rgba(251,191,36,.12);color:#fcd34d;border-color:rgba(251,191,36,.26)}
 
-/* ================= TAGS ================= */
-.tag{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  padding:5px 10px;
-  border-radius:999px;
-  font-size:10.5px;
-  font-weight:700;
-  letter-spacing:.2px;
-  white-space:nowrap;
-  background:rgba(168,85,247,.13);
-  color:#d8b4fe;
-  border:1px solid rgba(168,85,247,.24);
-}
+/* ============ EMPTY ============ */
+.empty{text-align:center;padding:48px 20px;color:var(--muted);font-size:12.5px;line-height:1.9}
 
-.tag.green{
-  background:rgba(52,211,153,.12);
-  color:#6ee7b7;
-  border-color:rgba(52,211,153,.26);
-}
+/* ============ SEGMENTED TABS ============ */
+.segmented{display:inline-flex;padding:4px;gap:4px;border-radius:12px;
+  background:#0c0913;border:1px solid var(--line);margin-bottom:20px}
+.segmented-btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;
+  border:0;border-radius:9px;background:transparent;color:var(--muted);
+  font-size:12.5px;font-weight:600;transition:all .16s ease}
+.segmented-btn svg{width:14px;height:14px}
+.segmented-btn:hover{color:var(--text)}
+.segmented-btn.active{background:linear-gradient(135deg,rgba(168,85,247,.28),rgba(124,58,237,.16));
+  color:#ecd9ff;box-shadow:0 2px 8px -4px rgba(168,85,247,.6)}
+.method-panel{display:none}
+.method-panel.active{display:block;animation:fadeUp .28s ease both}
 
-.tag.red{
-  background:rgba(251,113,133,.12);
-  color:#fda4af;
-  border-color:rgba(251,113,133,.28);
-}
-
-.tag.yellow{
-  background:rgba(251,191,36,.12);
-  color:#fcd34d;
-  border-color:rgba(251,191,36,.26);
-}
-
-/* ================= EMPTY ================= */
-.empty{
-  text-align:center;
-  padding:48px 20px;
-  color:var(--muted);
-  font-size:12.5px;
-  line-height:1.9;
-}
-
-/* ================= DEPLOY FORM ================= */
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-}
-
+/* ============ DEPLOY FORM ============ */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .form-grid .field{margin:0}
+.form-grid .field.full{grid-column:1/-1}
 
-.result{
-  margin-top:20px;
-  padding:17px;
-  border:1px solid rgba(168,85,247,.3);
+/* ============ DROPZONE ============ */
+.dropzone{position:relative;padding:28px 20px;border:2px dashed var(--line);
+  border-radius:14px;background:rgba(13,10,19,.6);text-align:center;
+  transition:all .2s ease;cursor:pointer}
+.dropzone:hover,.dropzone.drag{border-color:rgba(168,85,247,.55);
+  background:rgba(168,85,247,.06)}
+.dropzone.drag{border-style:solid;box-shadow:0 0 0 4px rgba(168,85,247,.12)}
+.dropzone-inner{pointer-events:none}
+.dropzone-icon{width:38px;height:38px;color:#7d6f92;margin-bottom:10px}
+.dropzone-title{font-size:13px;font-weight:600;color:var(--text);margin:0 0 4px}
+.dropzone-sub{font-size:11.5px;color:var(--muted);margin:0 0 14px}
+.dropzone-actions{display:flex;gap:8px;justify-content:center;pointer-events:auto}
+.dropzone-actions .btn{pointer-events:auto}
+
+/* ============ FILE LIST ============ */
+.file-list{margin-top:14px;border:1px solid var(--line);border-radius:12px;
+  background:#0c0913;overflow:hidden}
+.file-list-head{padding:12px 14px;display:flex;justify-content:space-between;
+  align-items:center;gap:10px;border-bottom:1px solid var(--line-soft);
+  font-size:12px;font-weight:600;color:var(--text-2)}
+.file-list-body{max-height:280px;overflow-y:auto}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 14px;
+  border-bottom:1px solid rgba(34,26,46,.5);font-size:12px}
+.file-item:last-child{border-bottom:0}
+.file-item svg{width:14px;height:14px;color:var(--muted);flex-shrink:0}
+.file-item-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:11.5px}
+.file-item-size{color:var(--muted);font-size:10.5px;flex-shrink:0}
+.file-item-remove{background:transparent;border:0;color:#6d647c;padding:2px;
+  border-radius:4px;display:grid;place-items:center;flex-shrink:0;transition:all .15s ease}
+.file-item-remove:hover{color:var(--red);background:rgba(251,113,133,.1)}
+
+/* ============ RESULT ============ */
+.result{margin-top:20px;padding:17px;border:1px solid rgba(168,85,247,.3);
   background:linear-gradient(180deg,rgba(168,85,247,.10),rgba(168,85,247,.03));
-  border-radius:12px;
-  overflow-wrap:anywhere;
-  animation:fadeUp .25s ease both;
-}
-
-.result-url{
-  display:block;
-  color:var(--accent-soft);
-  font-size:12px;
-  margin:12px 0;
-  overflow-wrap:anywhere;
-  font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
-  text-decoration:none;
-}
-
+  border-radius:12px;overflow-wrap:anywhere;animation:fadeUp .25s ease both}
+.result-title{font-weight:700;font-size:13px;margin:0 0 8px}
+.result-title.error{color:var(--red)}
+.result-url{display:block;color:var(--accent-soft);font-size:12px;margin:12px 0;
+  overflow-wrap:anywhere;font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+  text-decoration:none}
 .result-url:hover{text-decoration:underline}
 
-/* ================= HISTORY ================= */
-.history-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:16px;
-  padding:16px 20px;
-  border-bottom:1px solid var(--line-soft);
-  transition:background .16s ease;
-}
-
+/* ============ HISTORY ============ */
+.history-item{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  padding:16px 20px;border-bottom:1px solid var(--line-soft);transition:background .16s ease}
 .history-item:last-child{border-bottom:0}
 .history-item:hover{background:rgba(255,255,255,.018)}
-
 .history-main{min-width:0;flex:1}
-
-.history-title{
-  font-weight:700;
-  font-size:12.5px;
-  overflow-wrap:anywhere;
-}
-
+.history-title{font-weight:700;font-size:12.5px;overflow-wrap:anywhere}
 .history-sep{color:#4d445e;margin:0 2px}
-
-.history-detail{
-  font-size:11.5px;
-  color:var(--muted);
-  margin-top:6px;
-  overflow-wrap:anywhere;
-  line-height:1.6;
-}
-
+.history-detail{font-size:11.5px;color:var(--muted);margin-top:6px;
+  overflow-wrap:anywhere;line-height:1.6}
 .history-detail.mono{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:11px}
-
-.history-time{
-  font-size:10.5px;
-  color:#6d647c;
-  margin-top:8px;
-  letter-spacing:.3px;
-}
-
+.history-time{font-size:10.5px;color:#6d647c;margin-top:8px;letter-spacing:.3px}
 .history-right{text-align:right;flex-shrink:0}
 
-/* ================= TOAST ================= */
-.toast{
-  position:fixed;
-  z-index:120;
-  bottom:26px;
-  right:26px;
-  max-width:calc(100% - 52px);
-  padding:14px 18px;
-  background:linear-gradient(180deg,#251c34,#181122);
-  border:1px solid #4a3a63;
-  border-radius:12px;
-  box-shadow:0 24px 50px -18px rgba(0,0,0,1);
-  font-size:13px;
-  font-weight:500;
-  display:none;
-  animation:toastIn .26s cubic-bezier(.2,.9,.3,1.2);
-}
+/* ============ MODAL ============ */
+.modal-overlay{position:fixed;inset:0;z-index:100;background:rgba(4,2,8,.72);
+  backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;
+  animation:fadeIn .2s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:100%;max-width:440px;
+  background:linear-gradient(180deg,#1a1426,#100c18);
+  border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 30px 70px -20px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.04);
+  animation:modalIn .28s cubic-bezier(.2,.9,.3,1.1) both;overflow:hidden}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.96)}
+  to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;
+  gap:12px;padding:22px 22px 0}
+.modal-title{margin:0;font-size:16px;font-weight:700;letter-spacing:-.2px;line-height:1.4}
+.modal-close{background:transparent;border:0;color:var(--muted);padding:4px;
+  border-radius:6px;display:grid;place-items:center;flex-shrink:0;transition:all .15s ease}
+.modal-close:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.modal-body{padding:14px 22px 6px;color:var(--text-2);font-size:13px;line-height:1.65}
+.modal-body p{margin:0 0 14px}
+.modal-body p:last-child{margin-bottom:0}
+.modal-foot{padding:16px 22px 22px;display:flex;gap:10px;justify-content:flex-end}
+.modal-foot .btn{min-width:82px}
+.modal-err{color:var(--red);font-size:11.5px;margin:8px 0 0;min-height:16px;font-weight:500}
 
+/* ============ TOAST ============ */
+.toast{position:fixed;z-index:120;bottom:26px;right:26px;max-width:calc(100% - 52px);
+  padding:14px 18px;background:linear-gradient(180deg,#251c34,#181122);
+  border:1px solid #4a3a63;border-radius:12px;
+  box-shadow:0 24px 50px -18px rgba(0,0,0,1);font-size:13px;font-weight:500;
+  display:none;animation:toastIn .26s cubic-bezier(.2,.9,.3,1.2)}
 .toast.show{display:block}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 
-@keyframes toastIn{
-  from{opacity:0;transform:translateY(14px) scale(.97)}
-  to{opacity:1;transform:none}
-}
-
-/* ================= MOBILE NAV ================= */
+/* ============ MOBILE NAV ============ */
 .mobile-nav{display:none}
 
-/* ================= RESPONSIVE ================= */
+/* ============ RESPONSIVE ============ */
 @media(max-width:900px){
   .sidebar{display:none}
-
   .topbar{padding:13px 16px;min-height:62px}
   .topbar h2{font-size:15px}
-
   .content{padding:20px 15px 100px}
-
   .heading{flex-direction:column;align-items:flex-start;gap:12px}
   .heading h1{font-size:20px}
-
   .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
   .stat{padding:13px 11px}
   .stat-ico{width:22px;height:22px;border-radius:7px}
   .stat-ico svg{width:12px;height:12px}
   .stat-label{font-size:9px;letter-spacing:.2px}
   .stat-number{font-size:19px;margin-top:9px}
-
   .panel-head{flex-direction:column;align-items:flex-start;gap:12px}
   .search-wrap{max-width:none}
-
   .project{padding:16px}
   .project-top{flex-direction:column;gap:12px}
-
   .form-grid{grid-template-columns:1fr;gap:14px}
-
   .history-item{flex-direction:column;gap:10px}
   .history-right{text-align:left}
-
   .connection{font-size:10px;padding:5px 10px}
   .top-actions .btn{padding:7px 10px;font-size:11.5px}
-
-  .mobile-nav{
-    display:flex;
-    position:fixed;
-    z-index:60;
-    bottom:0;
-    left:0;
-    right:0;
-    justify-content:space-around;
-    background:rgba(13,10,20,.94);
-    backdrop-filter:blur(16px);
-    border-top:1px solid var(--line);
-    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-  }
-
-  .mobile-nav button{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:4px;
-    border:0;
-    background:transparent;
-    color:var(--muted);
-    padding:7px 4px;
-    border-radius:10px;
-    font-size:10.5px;
-    font-weight:600;
-    transition:all .16s ease;
-  }
-
+  .segmented{width:100%}
+  .segmented-btn{flex:1;justify-content:center;padding:10px 8px}
+  .mobile-nav{display:flex;position:fixed;z-index:60;bottom:0;left:0;right:0;
+    justify-content:space-around;background:rgba(13,10,20,.94);
+    backdrop-filter:blur(16px);border-top:1px solid var(--line);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+  .mobile-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    border:0;background:transparent;color:var(--muted);padding:7px 4px;
+    border-radius:10px;font-size:10.5px;font-weight:600;transition:all .16s ease}
   .mobile-nav button svg{width:18px;height:18px}
-
-  .mobile-nav button.active{
-    color:var(--accent-soft);
-    background:rgba(168,85,247,.13);
-  }
-
+  .mobile-nav button.active{color:var(--accent-soft);background:rgba(168,85,247,.13)}
   .toast{left:16px;right:16px;bottom:90px;max-width:none}
+  .modal-foot{flex-direction:column-reverse}
+  .modal-foot .btn{width:100%}
 }
-
 @media(max-width:400px){
   .stats{grid-template-columns:1fr 1fr}
-  .stat:first-child{grid-column:1 / -1}
+  .stat:first-child{grid-column:1/-1}
 }
 </style>
 </head>
 <body>
 
-<!-- ================= LOGIN ================= -->
+<!-- ============ LOGIN ============ -->
 <div id="loginPage">
   <div class="login-box">
     <div class="login-brand">
@@ -849,10 +367,8 @@ select{
         <div class="login-brand-sub">Vercel Manager</div>
       </div>
     </div>
-
     <h1>Masuk ke Dashboard</h1>
     <p class="muted">Panel pengelolaan proyek dan deployment Vercel.</p>
-
     <form id="loginForm">
       <div class="field">
         <label for="password">Password Admin</label>
@@ -860,16 +376,13 @@ select{
       </div>
       <button class="btn primary block" id="loginButton">Masuk Dashboard</button>
     </form>
-
     <p id="loginError" class="small form-error"></p>
   </div>
 </div>
 
-<!-- ================= APP ================= -->
+<!-- ============ APP ============ -->
 <div id="appPage" class="hidden">
   <div class="layout">
-
-    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="brand">
         <div class="logo">I</div>
@@ -878,37 +391,26 @@ select{
           <div class="brand-sub">Vercel Manager</div>
         </div>
       </div>
-
       <div class="nav-label">Menu Utama</div>
-
       <button class="nav-btn active" data-tab="projects">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="3" width="7" height="7" rx="2"/>
-          <rect x="14" y="3" width="7" height="7" rx="2"/>
-          <rect x="3" y="14" width="7" height="7" rx="2"/>
-          <rect x="14" y="14" width="7" height="7" rx="2"/>
+          <rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/>
+          <rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>
         </svg>
         <span>Proyek</span>
       </button>
-
       <button class="nav-btn" data-tab="deploy">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 16V4"/>
-          <path d="m7 9 5-5 5 5"/>
-          <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          <path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
         </svg>
         <span>Deploy</span>
       </button>
-
       <button class="nav-btn" data-tab="history">
         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12a9 9 0 1 0 3-6.7"/>
-          <path d="M3 4v5h5"/>
-          <path d="M12 8v4l3 2"/>
+          <path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/>
         </svg>
         <span>Riwayat</span>
       </button>
-
       <div class="sidebar-foot">
         <strong>Iky Store</strong>
         Vercel Manager v1.0<br>
@@ -916,7 +418,6 @@ select{
       </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main">
       <header class="topbar">
         <h2 id="topTitle">Proyek</h2>
@@ -924,9 +425,7 @@ select{
           <span class="connection" id="connection" data-state="wait">Menghubungkan</span>
           <button class="btn small" id="logoutButton">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <path d="m16 17 5-5-5-5"/>
-              <path d="M21 12H9"/>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/>
             </svg>
             Keluar
           </button>
@@ -934,8 +433,7 @@ select{
       </header>
 
       <div class="content">
-
-        <!-- PROJECTS -->
+        <!-- ============ PROJECTS ============ -->
         <section id="tab-projects" class="view active">
           <div class="heading">
             <div>
@@ -955,17 +453,14 @@ select{
               <div class="stat-top">
                 <span class="stat-ico">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="7" height="7" rx="2"/>
-                    <rect x="14" y="3" width="7" height="7" rx="2"/>
-                    <rect x="3" y="14" width="7" height="7" rx="2"/>
-                    <rect x="14" y="14" width="7" height="7" rx="2"/>
+                    <rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/>
+                    <rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>
                   </svg>
                 </span>
                 <span class="stat-label">Total Proyek</span>
               </div>
               <div class="stat-number" id="totalProjects">0</div>
             </div>
-
             <div class="stat">
               <div class="stat-top">
                 <span class="stat-ico green">
@@ -977,7 +472,6 @@ select{
               </div>
               <div class="stat-number" id="successful">0</div>
             </div>
-
             <div class="stat">
               <div class="stat-top">
                 <span class="stat-ico red">
@@ -996,8 +490,7 @@ select{
               <h3>Semua Proyek</h3>
               <div class="search-wrap">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="11" cy="11" r="7"/>
-                  <path d="m20 20-3.2-3.2"/>
+                  <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>
                 </svg>
                 <input class="search" id="searchProject" placeholder="Cari proyek...">
               </div>
@@ -1006,59 +499,145 @@ select{
           </div>
         </section>
 
-        <!-- DEPLOY -->
+        <!-- ============ DEPLOY ============ -->
         <section id="tab-deploy" class="view">
           <div class="heading">
             <div>
               <h1>Deploy Project</h1>
-              <p>Deploy dari repository GitHub yang telah terhubung ke Vercel.</p>
+              <p>Deploy dari GitHub atau unggah file langsung ke Vercel.</p>
             </div>
           </div>
 
-          <div class="panel">
-            <div class="panel-head"><h3>Konfigurasi Deployment</h3></div>
-            <div class="panel-body">
-              <form id="deployForm">
-                <div class="form-grid">
-                  <div class="field">
-                    <label for="deployProject">Proyek Vercel</label>
-                    <select id="deployProject" required><option value="">Pilih proyek</option></select>
-                  </div>
-                  <div class="field">
-                    <label for="deployBranch">Branch GitHub</label>
-                    <input id="deployBranch" value="main" placeholder="main" required>
-                  </div>
-                  <div class="field">
-                    <label for="deployTarget">Target</label>
-                    <select id="deployTarget">
-                      <option value="production">Production</option>
-                      <option value="preview">Preview</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label for="deploySource">Sumber deployment</label>
-                    <input id="deploySource" value="GitHub Integration Vercel" disabled>
-                  </div>
-                </div>
+          <div class="segmented">
+            <button class="segmented-btn active" data-method="github">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+              </svg>
+              GitHub Repository
+            </button>
+            <button class="segmented-btn" data-method="files">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              Upload Files
+            </button>
+          </div>
 
-                <div style="margin-top:20px">
-                  <button class="btn primary" id="deployButton" type="submit">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 16V4"/>
-                      <path d="m7 9 5-5 5 5"/>
-                      <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
-                    </svg>
-                    Mulai Deployment
-                  </button>
-                </div>
-              </form>
+          <!-- GitHub method -->
+          <div id="githubMethod" class="method-panel active">
+            <div class="panel">
+              <div class="panel-head"><h3>Konfigurasi Deployment GitHub</h3></div>
+              <div class="panel-body">
+                <form id="deployForm">
+                  <div class="form-grid">
+                    <div class="field">
+                      <label for="deployProject">Proyek Vercel</label>
+                      <select id="deployProject" required><option value="">Pilih proyek</option></select>
+                    </div>
+                    <div class="field">
+                      <label for="deployBranch">Branch GitHub</label>
+                      <input id="deployBranch" value="main" placeholder="main" required>
+                    </div>
+                    <div class="field">
+                      <label for="deployTarget">Target</label>
+                      <select id="deployTarget">
+                        <option value="production">Production</option>
+                        <option value="preview">Preview</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="deploySource">Sumber deployment</label>
+                      <input id="deploySource" value="GitHub Integration Vercel" disabled>
+                    </div>
+                  </div>
+                  <div style="margin-top:20px">
+                    <button class="btn primary" id="deployButton" type="submit">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                      </svg>
+                      Mulai Deployment
+                    </button>
+                  </div>
+                </form>
+                <div id="deployResult"></div>
+              </div>
+            </div>
+          </div>
 
-              <div id="deployResult"></div>
+          <!-- Files method -->
+          <div id="filesMethod" class="method-panel">
+            <div class="panel">
+              <div class="panel-head"><h3>Upload Files ke Vercel</h3></div>
+              <div class="panel-body">
+                <form id="uploadForm">
+                  <div class="form-grid">
+                    <div class="field">
+                      <label for="uploadName">Nama Proyek</label>
+                      <input id="uploadName" placeholder="contoh: my-website" required>
+                    </div>
+                    <div class="field">
+                      <label for="uploadTarget">Target</label>
+                      <select id="uploadTarget">
+                        <option value="production">Production</option>
+                        <option value="preview">Preview</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="field" style="margin-top:20px">
+                    <label>File / Folder</label>
+                    <div class="dropzone" id="dropzone">
+                      <div class="dropzone-inner">
+                        <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                          <path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>
+                        </svg>
+                        <p class="dropzone-title">Drag & drop file atau folder di sini</p>
+                        <p class="dropzone-sub">atau klik tombol di bawah untuk memilih</p>
+                        <div class="dropzone-actions">
+                          <button type="button" class="btn small" data-pick="files">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                            </svg>
+                            Pilih File
+                          </button>
+                          <button type="button" class="btn small" data-pick="folder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                            </svg>
+                            Pilih Folder
+                          </button>
+                        </div>
+                      </div>
+                      <input type="file" id="fileInput" multiple hidden>
+                      <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
+                    </div>
+                  </div>
+
+                  <div class="file-list hidden" id="fileList">
+                    <div class="file-list-head">
+                      <span id="fileListInfo">0 file</span>
+                      <button type="button" class="btn small ghost-danger" id="clearFiles">Bersihkan</button>
+                    </div>
+                    <div class="file-list-body" id="fileListBody"></div>
+                  </div>
+
+                  <div style="margin-top:20px">
+                    <button class="btn primary" id="uploadButton" type="submit">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                      </svg>
+                      Deploy Files
+                    </button>
+                  </div>
+                </form>
+                <div id="uploadResult"></div>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- HISTORY -->
+        <!-- ============ HISTORY ============ -->
         <section id="tab-history" class="view">
           <div class="heading">
             <div>
@@ -1067,13 +646,11 @@ select{
             </div>
             <button class="btn" id="refreshHistory">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12a9 9 0 1 1-3-6.7"/>
-                <path d="M21 4v5h-5"/>
+                <path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/>
               </svg>
               Refresh
             </button>
           </div>
-
           <div class="panel">
             <div class="panel-head">
               <h3>History Center</h3>
@@ -1082,41 +659,47 @@ select{
             <div id="historyList"><div class="empty">Memuat riwayat...</div></div>
           </div>
         </section>
-
       </div>
     </main>
   </div>
 
-  <!-- MOBILE NAV -->
   <nav class="mobile-nav">
     <button class="active" data-tab="projects">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="2"/>
-        <rect x="14" y="3" width="7" height="7" rx="2"/>
-        <rect x="3" y="14" width="7" height="7" rx="2"/>
-        <rect x="14" y="14" width="7" height="7" rx="2"/>
+        <rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/>
+        <rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>
       </svg>
       <span>Proyek</span>
     </button>
-
     <button data-tab="deploy">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 16V4"/>
-        <path d="m7 9 5-5 5 5"/>
-        <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+        <path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
       </svg>
       <span>Deploy</span>
     </button>
-
     <button data-tab="history">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 12a9 9 0 1 0 3-6.7"/>
-        <path d="M3 4v5h5"/>
-        <path d="M12 8v4l3 2"/>
+        <path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v4l3 2"/>
       </svg>
       <span>Riwayat</span>
     </button>
   </nav>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 class="modal-title" id="modalTitle">Konfirmasi</h3>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Tutup">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
 </div>
 
 <div id="toast" class="toast"></div>
@@ -1127,434 +710,719 @@ select{
 const $ = id => document.getElementById(id);
 let projects = [];
 let historyItems = [];
+let selectedFiles = [];
+let currentMethod = "github";
 
-const tabTitles = {
- projects:"Proyek",
- deploy:"Deployment",
- history:"Riwayat Aktivitas"
-};
+const tabTitles = { projects:"Proyek", deploy:"Deployment", history:"Riwayat Aktivitas" };
 
-function escapeHTML(value){
- return String(value ?? "").replace(/[&<>"']/g, c => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
+function escapeHTML(v){
+  return String(v ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
 }
 
-function notify(message){
- const el=$("toast");
- el.textContent=message;
- el.classList.add("show");
- clearTimeout(window.noticeTimer);
- window.noticeTimer=setTimeout(()=>el.classList.remove("show"),3200);
+function formatSize(bytes){
+  if (!bytes) return "0 B";
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1048576) return (bytes/1024).toFixed(1) + " KB";
+  return (bytes/1048576).toFixed(2) + " MB";
 }
 
-async function api(path,options={}){
- const headers={...(options.headers||{})};
- if(options.body) headers["Content-Type"]="application/json";
-
- const response=await fetch(path,{
-  ...options,
-  headers,
-  credentials:"same-origin"
- });
-
- const data=await response.json().catch(()=>({}));
-
- if(!response.ok){
-  if(response.status===401 && path!=="/api/login") showLogin();
-  throw new Error(data.error || "Permintaan gagal.");
- }
- return data;
+function notify(msg){
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(window._notifyTimer);
+  window._notifyTimer = setTimeout(() => el.classList.remove("show"), 3200);
 }
 
-function showLogin(){
- $("appPage").classList.add("hidden");
- $("loginPage").classList.remove("hidden");
+async function api(path, options = {}){
+  const headers = { ...(options.headers || {}) };
+  const isForm = options.body instanceof FormData;
+  if (options.body && !isForm) headers["Content-Type"] = "application/json";
+  const response = await fetch(path, { ...options, headers, credentials: "same-origin" });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok){
+    if (response.status === 401 && path !== "/api/login") showLogin();
+    throw new Error(data.error || "Permintaan gagal.");
+  }
+  return data;
 }
 
-function showApp(){
- $("loginPage").classList.add("hidden");
- $("appPage").classList.remove("hidden");
+function showLogin(){ $("appPage").classList.add("hidden"); $("loginPage").classList.remove("hidden"); }
+function showApp(){ $("loginPage").classList.add("hidden"); $("appPage").classList.remove("hidden"); }
+
+function setConnection(text, state){
+  const el = $("connection");
+  el.textContent = text;
+  el.dataset.state = state;
 }
 
-function setConnection(text,state){
- const el=$("connection");
- el.textContent=text;
- el.dataset.state=state;
+/* ==================== MODAL SYSTEM ==================== */
+function openModal(opts){
+  return new Promise(resolve => {
+    const overlay = $("modalOverlay");
+    const titleEl = $("modalTitle");
+    const bodyEl = $("modalBody");
+    const footEl = $("modalFoot");
+
+    titleEl.textContent = opts.title || "";
+    bodyEl.innerHTML = opts.body || "";
+    footEl.innerHTML = "";
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.className = "btn";
+    cancelBtn.textContent = opts.cancelText || "Batal";
+    cancelBtn.onclick = () => finish(null);
+    footEl.appendChild(cancelBtn);
+
+    const confirmBtn = document.createElement("button");
+    confirmBtn.type = "button";
+    confirmBtn.className = "btn " + (opts.danger ? "danger" : "primary");
+    confirmBtn.textContent = opts.confirmText || "Ya";
+    confirmBtn.onclick = () => {
+      if (opts.validate){
+        const input = $("modalInput");
+        const val = input ? input.value : null;
+        const err = opts.validate(val);
+        if (err){
+          const errEl = $("modalError");
+          if (errEl) errEl.textContent = err;
+          return;
+        }
+        finish(val);
+      } else {
+        finish(true);
+      }
+    };
+    footEl.appendChild(confirmBtn);
+
+    if (opts.input){
+      const input = $("modalInput");
+      if (input){
+        input.value = opts.defaultValue || "";
+        input.placeholder = opts.placeholder || "";
+        if (opts.validate){
+          const errEl = $("modalError");
+          const check = () => {
+            const err = opts.validate(input.value);
+            if (errEl) errEl.textContent = err || "";
+            confirmBtn.disabled = Boolean(err);
+          };
+          input.addEventListener("input", check);
+          check();
+        }
+        input.addEventListener("keydown", e => {
+          if (e.key === "Enter" && !confirmBtn.disabled){ e.preventDefault(); confirmBtn.click(); }
+        });
+      }
+    }
+
+    overlay.classList.remove("hidden");
+    setTimeout(() => {
+      const input = $("modalInput");
+      (input || confirmBtn).focus();
+    }, 60);
+
+    function finish(result){
+      overlay.classList.add("hidden");
+      document.removeEventListener("keydown", escHandler);
+      resolve(result);
+    }
+    function escHandler(e){ if (e.key === "Escape") finish(null); }
+    document.addEventListener("keydown", escHandler);
+
+    $("modalClose").onclick = () => finish(null);
+    overlay.onclick = e => { if (e.target === overlay) finish(null); };
+  });
 }
 
+function showConfirm(title, message, opts = {}){
+  return openModal({
+    title,
+    body: `<p>${escapeHTML(message)}</p>`,
+    confirmText: opts.confirmText || "Ya",
+    cancelText: opts.cancelText || "Batal",
+    danger: opts.danger
+  }).then(r => r === true);
+}
+
+function showPrompt(title, message, opts = {}){
+  return openModal({
+    title,
+    body: `
+      <p>${escapeHTML(message)}</p>
+      <input id="modalInput" type="text">
+      <p class="modal-err" id="modalError"></p>`,
+    input: true,
+    defaultValue: opts.defaultValue || "",
+    placeholder: opts.placeholder || "",
+    validate: opts.validate,
+    confirmText: opts.confirmText || "Simpan",
+    cancelText: opts.cancelText || "Batal",
+    danger: opts.danger
+  });
+}
+
+/* ==================== TABS ==================== */
 function changeTab(tab){
- document.querySelectorAll(".view").forEach(el=>{
-  el.classList.toggle("active",el.id==="tab-"+tab);
- });
- document.querySelectorAll("[data-tab]").forEach(el=>{
-  el.classList.toggle("active",el.dataset.tab===tab);
- });
- $("topTitle").textContent=tabTitles[tab]||"Dashboard";
- if(tab==="history") loadHistory();
- if(tab==="deploy") renderProjectOptions();
+  document.querySelectorAll(".view").forEach(el => el.classList.toggle("active", el.id === "tab-" + tab));
+  document.querySelectorAll("[data-tab]").forEach(el => el.classList.toggle("active", el.dataset.tab === tab));
+  $("topTitle").textContent = tabTitles[tab] || "Dashboard";
+  if (tab === "history") loadHistory();
+  if (tab === "deploy") renderProjectOptions();
 }
 
+function switchMethod(method){
+  currentMethod = method;
+  document.querySelectorAll(".segmented-btn").forEach(b => b.classList.toggle("active", b.dataset.method === method));
+  $("githubMethod").classList.toggle("active", method === "github");
+  $("filesMethod").classList.toggle("active", method === "files");
+}
+
+/* ==================== RENDER ==================== */
 function dateText(value){
- if(!value) return "-";
- const d=new Date(Number(value));
- return Number.isNaN(d.getTime())?"-":d.toLocaleString("id-ID");
+  if (!value) return "-";
+  const d = new Date(Number(value));
+  return Number.isNaN(d.getTime()) ? "-" : d.toLocaleString("id-ID");
 }
 
 function statusClass(status){
- const s=String(status||"").toUpperCase();
- if(["READY","SUCCESS","OK"].includes(s)) return "green";
- if(["ERROR","FAILED","CANCELED","BLOCKED"].includes(s)) return "red";
- return "yellow";
+  const s = String(status || "").toUpperCase();
+  if (["READY","SUCCESS","OK"].includes(s)) return "green";
+  if (["ERROR","FAILED","CANCELED","BLOCKED"].includes(s)) return "red";
+  return "yellow";
 }
 
 function renderProjects(){
- const query=$("searchProject").value.toLowerCase().trim();
- const filtered=projects.filter(p=>
-  p.name.toLowerCase().includes(query) ||
-  (p.repository||"").toLowerCase().includes(query)
- );
+  const q = $("searchProject").value.toLowerCase().trim();
+  const filtered = projects.filter(p =>
+    p.name.toLowerCase().includes(q) || (p.repository || "").toLowerCase().includes(q)
+  );
+  $("totalProjects").textContent = projects.length;
 
- $("totalProjects").textContent=projects.length;
+  if (!filtered.length){
+    $("projectList").innerHTML = '<div class="empty">Tidak ada proyek ditemukan.</div>';
+    return;
+  }
 
- if(!filtered.length){
-  $("projectList").innerHTML='<div class="empty">Tidak ada proyek ditemukan.</div>';
-  return;
- }
-
- $("projectList").innerHTML=filtered.map(p=>`
-  <article class="project">
-   <div class="project-top">
-    <div class="project-head">
-     <div class="project-avatar">${escapeHTML((p.name||"?").trim().charAt(0).toUpperCase())}</div>
-     <div>
-      <div class="project-name">${escapeHTML(p.name)}</div>
-      <div class="project-id">${escapeHTML(p.id)}</div>
-     </div>
-    </div>
-    <span class="tag ${p.canDeploy?"green":"yellow"}">
-     ${p.canDeploy?"GitHub Connected":"GitHub belum terhubung"}
-    </span>
-   </div>
-   <div class="project-meta">
-    <span class="meta-item"><b>Repo</b> ${escapeHTML(p.repository||"-")}</span>
-    <span class="meta-item"><b>Branch</b> ${escapeHTML(p.branch||"main")}</span>
-    <span class="meta-item"><b>Framework</b> ${escapeHTML(p.framework||"-")}</span>
-   </div>
-   <div class="actions">
-    <button class="btn small primary" data-action="deploy" data-id="${escapeHTML(p.id)}" ${p.canDeploy?"":"disabled"}>Deploy</button>
-    <button class="btn small" data-action="redeploy" data-id="${escapeHTML(p.id)}">Redeploy</button>
-    <button class="btn small" data-action="copy" data-id="${escapeHTML(p.id)}">Salin URL</button>
-    <button class="btn small" data-action="open" data-id="${escapeHTML(p.id)}">Buka Website</button>
-    <button class="btn small" data-action="rename" data-id="${escapeHTML(p.id)}">Rename</button>
-    <button class="btn small danger" data-action="delete" data-id="${escapeHTML(p.id)}">Hapus</button>
-   </div>
-  </article>
- `).join("");
+  $("projectList").innerHTML = filtered.map(p => `
+    <article class="project">
+      <div class="project-top">
+        <div class="project-head">
+          <div class="project-avatar">${escapeHTML((p.name||"?").trim().charAt(0).toUpperCase())}</div>
+          <div>
+            <div class="project-name">${escapeHTML(p.name)}</div>
+            <div class="project-id">${escapeHTML(p.id)}</div>
+          </div>
+        </div>
+        <span class="tag ${p.canDeploy?"green":"yellow"}">
+          ${p.canDeploy?"GitHub Connected":"GitHub belum terhubung"}
+        </span>
+      </div>
+      <div class="project-meta">
+        <span class="meta-item"><b>Repo</b> ${escapeHTML(p.repository||"-")}</span>
+        <span class="meta-item"><b>Branch</b> ${escapeHTML(p.branch||"main")}</span>
+        <span class="meta-item"><b>Framework</b> ${escapeHTML(p.framework||"-")}</span>
+      </div>
+      <div class="actions">
+        <button class="btn small primary" data-action="deploy" data-id="${escapeHTML(p.id)}" ${p.canDeploy?"":"disabled"}>Deploy</button>
+        <button class="btn small" data-action="redeploy" data-id="${escapeHTML(p.id)}">Redeploy</button>
+        <button class="btn small" data-action="copy" data-id="${escapeHTML(p.id)}">Salin URL</button>
+        <button class="btn small" data-action="open" data-id="${escapeHTML(p.id)}">Buka Website</button>
+        <button class="btn small" data-action="rename" data-id="${escapeHTML(p.id)}">Rename</button>
+        <button class="btn small ghost-danger" data-action="delete" data-id="${escapeHTML(p.id)}">Hapus</button>
+      </div>
+    </article>
+  `).join("");
 }
 
 function renderProjectOptions(){
- const select=$("deployProject");
- const old=select.value;
- const available=projects.filter(p=>p.canDeploy);
- select.innerHTML='<option value="">Pilih proyek</option>'+
-  available.map(p=>`<option value="${escapeHTML(p.id)}">${escapeHTML(p.name)}</option>`).join("");
- if(available.some(p=>p.id===old)) select.value=old;
- updateBranch();
+  const select = $("deployProject");
+  const old = select.value;
+  const available = projects.filter(p => p.canDeploy);
+  select.innerHTML = '<option value="">Pilih proyek</option>' +
+    available.map(p => `<option value="${escapeHTML(p.id)}">${escapeHTML(p.name)}</option>`).join("");
+  if (available.some(p => p.id === old)) select.value = old;
+  updateBranch();
 }
 
 function updateBranch(){
- const project=projects.find(p=>p.id===$("deployProject").value);
- if(project) $("deployBranch").value=project.branch||"main";
+  const project = projects.find(p => p.id === $("deployProject").value);
+  if (project) $("deployBranch").value = project.branch || "main";
 }
 
 function renderHistory(){
- $("historyCount").textContent=historyItems.length+" aktivitas";
-
- if(!historyItems.length){
-  $("historyList").innerHTML='<div class="empty">Belum ada riwayat aktivitas.</div>';
-  return;
- }
-
- $("historyList").innerHTML=historyItems.map(item=>`
-  <div class="history-item">
-   <div class="history-main">
-    <div class="history-title">${escapeHTML(item.action)}<span class="history-sep">·</span>${escapeHTML(item.title)}</div>
-    <div class="history-detail">${escapeHTML(item.detail||"-")}</div>
-    <div class="history-time">${dateText(item.at)}</div>
-    ${item.url?`<div class="history-detail mono">${escapeHTML(item.url)}</div>`:""}
-    ${item.url?`
-     <div class="actions">
-      <button class="btn small" data-history-copy="${escapeHTML(item.url)}">Salin URL</button>
-      <a class="btn small" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">Buka Website</a>
-     </div>`:""}
-   </div>
-   <div class="history-right"><span class="tag ${statusClass(item.status)}">${escapeHTML(item.status||"OK")}</span></div>
-  </div>
- `).join("");
+  $("historyCount").textContent = historyItems.length + " aktivitas";
+  if (!historyItems.length){
+    $("historyList").innerHTML = '<div class="empty">Belum ada riwayat aktivitas.</div>';
+    return;
+  }
+  $("historyList").innerHTML = historyItems.map(item => `
+    <div class="history-item">
+      <div class="history-main">
+        <div class="history-title">${escapeHTML(item.action)}<span class="history-sep">·</span>${escapeHTML(item.title)}</div>
+        <div class="history-detail">${escapeHTML(item.detail||"-")}</div>
+        <div class="history-time">${dateText(item.at)}</div>
+        ${item.url?`<div class="history-detail mono">${escapeHTML(item.url)}</div>`:""}
+        ${item.url?`
+          <div class="actions">
+            <button class="btn small" data-history-copy="${escapeHTML(item.url)}">Salin URL</button>
+            <a class="btn small" href="${escapeHTML(item.url)}" target="_blank" rel="noopener">Buka Website</a>
+          </div>`:""}
+      </div>
+      <div class="history-right"><span class="tag ${statusClass(item.status)}">${escapeHTML(item.status||"OK")}</span></div>
+    </div>
+  `).join("");
 }
 
 function updateStats(){
- $("successful").textContent=historyItems.filter(x=>
-  ["READY","SUCCESS","OK"].includes(String(x.status).toUpperCase())
- ).length;
- $("failed").textContent=historyItems.filter(x=>
-  ["ERROR","FAILED","CANCELED","BLOCKED"].includes(String(x.status).toUpperCase())
- ).length;
+  $("successful").textContent = historyItems.filter(x =>
+    ["READY","SUCCESS","OK"].includes(String(x.status).toUpperCase())).length;
+  $("failed").textContent = historyItems.filter(x =>
+    ["ERROR","FAILED","CANCELED","BLOCKED"].includes(String(x.status).toUpperCase())).length;
 }
 
+/* ==================== API LOADERS ==================== */
 async function loadProjects(){
- const data=await api("/api/projects");
- projects=data.projects||[];
- renderProjects();
- renderProjectOptions();
+  const data = await api("/api/projects");
+  projects = data.projects || [];
+  renderProjects();
+  renderProjectOptions();
 }
 
 async function loadHistory(){
- try{
-  const data=await api("/api/history");
-  historyItems=data.history||[];
-  renderHistory();
-  updateStats();
- }catch(error){
-  $("historyList").innerHTML=`<div class="empty">${escapeHTML(error.message)}</div>`;
- }
+  try {
+    const data = await api("/api/history");
+    historyItems = data.history || [];
+    renderHistory();
+    updateStats();
+  } catch (error){
+    $("historyList").innerHTML = `<div class="empty">${escapeHTML(error.message)}</div>`;
+  }
 }
 
 async function refreshAll(){
- setConnection("Menghubungkan...","wait");
- try{
-  await Promise.all([loadProjects(),loadHistory()]);
-  setConnection("Vercel Connected","ok");
- }catch(error){
-  setConnection("Koneksi bermasalah","error");
-  notify(error.message);
- }
+  setConnection("Menghubungkan...", "wait");
+  try {
+    await Promise.all([loadProjects(), loadHistory()]);
+    setConnection("Vercel Connected", "ok");
+  } catch (error){
+    setConnection("Koneksi bermasalah", "error");
+    notify(error.message);
+  }
 }
 
+/* ==================== HELPERS ==================== */
 async function getProjectURL(projectId){
- const data=await api("/api/deployments?projectId="+encodeURIComponent(projectId));
- const list=data.deployments||[];
- list.sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
-
- const chosen=
-  list.find(d=>d.state==="READY" && d.target==="production") ||
-  list.find(d=>d.state==="READY") ||
-  list.find(d=>d.url);
-
- if(!chosen?.url) throw new Error("URL deployment belum tersedia.");
- return chosen.url.startsWith("http")?chosen.url:"https://"+chosen.url;
+  const data = await api("/api/deployments?projectId=" + encodeURIComponent(projectId));
+  const list = data.deployments || [];
+  list.sort((a,b) => Number(b.createdAt||0) - Number(a.createdAt||0));
+  const chosen = list.find(d => d.state==="READY" && d.target==="production")
+    || list.find(d => d.state==="READY")
+    || list.find(d => d.url);
+  if (!chosen?.url) throw new Error("URL deployment belum tersedia.");
+  return chosen.url.startsWith("http") ? chosen.url : "https://" + chosen.url;
 }
 
 async function copyText(text){
- try{
-  await navigator.clipboard.writeText(text);
-  notify("URL berhasil disalin.");
- }catch{
-  const input=document.createElement("textarea");
-  input.value=text;
-  document.body.appendChild(input);
-  input.select();
-  document.execCommand("copy");
-  input.remove();
-  notify("URL berhasil disalin.");
- }
+  try { await navigator.clipboard.writeText(text); notify("URL berhasil disalin."); }
+  catch {
+    const i = document.createElement("textarea");
+    i.value = text; document.body.appendChild(i); i.select();
+    document.execCommand("copy"); i.remove(); notify("URL berhasil disalin.");
+  }
 }
 
-async function redeployProject(project){
- if(!confirm("Jalankan redeploy untuk proyek "+project.name+"?")) return;
+/* ==================== FILE UPLOAD ==================== */
+function renderFileList(){
+  const wrap = $("fileList");
+  const body = $("fileListBody");
+  const info = $("fileListInfo");
+  if (!selectedFiles.length){ wrap.classList.add("hidden"); return; }
+  wrap.classList.remove("hidden");
+  const total = selectedFiles.reduce((s,f) => s + f.size, 0);
+  info.textContent = `${selectedFiles.length} file · ${formatSize(total)}`;
+  body.innerHTML = selectedFiles.map((f, idx) => `
+    <div class="file-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+      </svg>
+      <span class="file-item-name" title="${escapeHTML(f._deployPath || f.name)}">${escapeHTML(f._deployPath || f.name)}</span>
+      <span class="file-item-size">${formatSize(f.size)}</span>
+      <button type="button" class="file-item-remove" data-remove="${idx}" aria-label="Hapus file">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+  `).join("");
+}
 
- try{
-  notify("Mengirim permintaan redeploy...");
-  const data=await api("/api/redeploy",{
-   method:"POST",
-   body:JSON.stringify({projectId:project.id})
+function addFiles(fileList, { folderMode = false } = {}){
+  const existing = new Set(selectedFiles.map(f => f._deployPath || f.name));
+  for (const file of fileList){
+    if (file.size === 0 && file.type === "") continue;
+    let path = file.name;
+    if (folderMode && file.webkitRelativePath){
+      const parts = file.webkitRelativePath.split("/").filter(Boolean);
+      path = parts.length > 1 ? parts.slice(1).join("/") : parts[0] || file.name;
+    } else if (file._deployPath){
+      path = file._deployPath;
+    }
+    if (existing.has(path)) continue;
+    if (/node_modules\//.test(path) || /(^|\/)\.git\//.test(path) || /\.DS_Store$/.test(path)) continue;
+    file._deployPath = path;
+    selectedFiles.push(file);
+    existing.add(path);
+  }
+  renderFileList();
+}
+
+async function traverseEntry(entry, path = ""){
+  if (entry.isFile){
+    const file = await new Promise((res, rej) => entry.file(res, rej));
+    file._deployPath = path + entry.name;
+    return [file];
+  }
+  if (entry.isDirectory){
+    const reader = entry.createReader();
+    const entries = await new Promise((res, rej) => {
+      const all = [];
+      (function read(){
+        reader.readEntries(e => { if (e.length){ all.push(...e); read(); } else res(all); }, rej);
+      })();
+    });
+    let result = [];
+    for (const e of entries) result.push(...await traverseEntry(e, path + entry.name + "/"));
+    return result;
+  }
+  return [];
+}
+
+function setupDropzone(){
+  const dz = $("dropzone");
+  const fileInput = $("fileInput");
+  const folderInput = $("folderInput");
+
+  dz.querySelectorAll("[data-pick]").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      if (btn.dataset.pick === "files") fileInput.click();
+      else folderInput.click();
+    });
   });
-  notify("Redeploy berhasil dimulai.");
-  if(data.deployment?.url){
-   $("deployResult").innerHTML=`
-    <div class="result">
-     <b>Redeploy dimulai</b>
-     <a class="result-url" href="${escapeHTML(data.deployment.url)}" target="_blank" rel="noopener">${escapeHTML(data.deployment.url)}</a>
-    </div>`;
-  }
-  await loadHistory();
- }catch(error){
-  notify(error.message);
-  await loadHistory();
- }
+
+  dz.addEventListener("click", e => {
+    if (e.target.closest("[data-pick]")) return;
+    fileInput.click();
+  });
+
+  fileInput.addEventListener("change", () => { addFiles(fileInput.files, { folderMode: false }); fileInput.value = ""; });
+  folderInput.addEventListener("change", () => { addFiles(folderInput.files, { folderMode: true }); folderInput.value = ""; });
+
+  ["dragenter","dragover"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add("drag"); }));
+  ["dragleave","drop"].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove("drag"); }));
+
+  dz.addEventListener("drop", async e => {
+    e.preventDefault();
+    const items = e.dataTransfer.items;
+    if (items && items.length && items[0].webkitGetAsEntry){
+      const all = [];
+      for (const item of items){
+        const entry = item.webkitGetAsEntry();
+        if (entry) all.push(...await traverseEntry(entry));
+      }
+      addFiles(all, { folderMode: false });
+    } else {
+      addFiles(e.dataTransfer.files, { folderMode: false });
+    }
+  });
+
+  $("fileListBody").addEventListener("click", e => {
+    const btn = e.target.closest("[data-remove]");
+    if (!btn) return;
+    const idx = Number(btn.dataset.remove);
+    selectedFiles.splice(idx, 1);
+    renderFileList();
+  });
+
+  $("clearFiles").addEventListener("click", () => { selectedFiles = []; renderFileList(); });
 }
 
-document.addEventListener("click",async event=>{
- const tab=event.target.closest("[data-tab]");
- if(tab){changeTab(tab.dataset.tab);return;}
+/* ==================== EVENT: click handlers ==================== */
+document.addEventListener("click", async event => {
+  const tab = event.target.closest("[data-tab]");
+  if (tab){ changeTab(tab.dataset.tab); return; }
 
- const copyHistory=event.target.closest("[data-history-copy]");
- if(copyHistory){await copyText(copyHistory.dataset.historyCopy);return;}
+  const seg = event.target.closest("[data-method]");
+  if (seg){ switchMethod(seg.dataset.method); return; }
 
- const button=event.target.closest("[data-action]");
- if(!button) return;
+  const copyHist = event.target.closest("[data-history-copy]");
+  if (copyHist){ await copyText(copyHist.dataset.historyCopy); return; }
 
- const project=projects.find(p=>p.id===button.dataset.id);
- if(!project) return;
+  const button = event.target.closest("[data-action]");
+  if (!button) return;
+  const project = projects.find(p => p.id === button.dataset.id);
+  if (!project) return;
+  const action = button.dataset.action;
 
- const action=button.dataset.action;
+  try {
+    if (action === "deploy"){
+      $("deployProject").value = project.id;
+      updateBranch();
+      changeTab("deploy");
+      switchMethod("github");
+      return;
+    }
 
- try{
-  if(action==="deploy"){
-   $("deployProject").value=project.id;
-   updateBranch();
-   changeTab("deploy");
-   return;
-  }
+    if (action === "redeploy"){
+      const ok = await showConfirm(
+        "Redeploy Proyek",
+        `Jalankan redeploy untuk proyek "${project.name}"?`,
+        { confirmText: "Redeploy" }
+      );
+      if (!ok) return;
+      notify("Mengirim permintaan redeploy...");
+      const data = await api("/api/redeploy", { method: "POST", body: JSON.stringify({ projectId: project.id }) });
+      notify("Redeploy berhasil dimulai.");
+      if (data.deployment?.url){
+        $("deployResult").innerHTML = `
+          <div class="result">
+            <p class="result-title">Redeploy dimulai</p>
+            <a class="result-url" href="${escapeHTML(data.deployment.url)}" target="_blank" rel="noopener">${escapeHTML(data.deployment.url)}</a>
+          </div>`;
+      }
+      await loadHistory();
+      return;
+    }
 
-  if(action==="redeploy"){
-   await redeployProject(project);
-   return;
-  }
+    if (action === "copy" || action === "open"){
+      const newTab = action === "open" ? window.open("about:blank", "_blank") : null;
+      try {
+        const url = await getProjectURL(project.id);
+        if (action === "copy") await copyText(url);
+        else if (newTab) newTab.location = url;
+        else window.location.href = url;
+      } catch (err){
+        if (newTab) newTab.close();
+        notify(err.message);
+      }
+      return;
+    }
 
-  if(action==="copy" || action==="open"){
-   const newTab=action==="open"?window.open("about:blank","_blank"):null;
-   try{
-    const url=await getProjectURL(project.id);
-    if(action==="copy") await copyText(url);
-    else if(newTab) newTab.location=url;
-    else window.location.href=url;
-   }catch(error){
-    if(newTab) newTab.close();
+    if (action === "rename"){
+      const newName = await showPrompt(
+        "Rename Proyek",
+        "Masukkan nama baru untuk proyek ini.",
+        {
+          defaultValue: project.name,
+          placeholder: project.name,
+          confirmText: "Simpan",
+          validate: v => {
+            if (!v || !v.trim()) return "Nama tidak boleh kosong";
+            if (!/^[a-zA-Z0-9._-]+$/.test(v)) return "Gunakan huruf, angka, titik, strip, atau underscore";
+            if (v.length > 100) return "Nama maksimal 100 karakter";
+            return "";
+          }
+        }
+      );
+      if (!newName || newName === project.name) return;
+      await api("/api/rename", { method: "POST", body: JSON.stringify({ projectId: project.id, name: newName.trim() }) });
+      notify("Nama proyek berhasil diubah.");
+      await Promise.all([loadProjects(), loadHistory()]);
+      return;
+    }
+
+    if (action === "delete"){
+      const typed = await showPrompt(
+        "Hapus Proyek",
+        `Ketik nama proyek "${project.name}" untuk konfirmasi. Tindakan ini akan menghapus deployment, domain, dan environment variables.`,
+        {
+          placeholder: project.name,
+          confirmText: "Hapus Permanen",
+          danger: true,
+          validate: v => v === project.name ? "" : "Nama tidak cocok"
+        }
+      );
+      if (typed !== project.name) return;
+      await api("/api/delete", { method: "POST", body: JSON.stringify({ projectId: project.id, confirmName: typed }) });
+      notify("Proyek berhasil dihapus.");
+      await Promise.all([loadProjects(), loadHistory()]);
+    }
+  } catch (error){
     notify(error.message);
-   }
-   return;
   }
+});
 
-  if(action==="rename"){
-   const name=prompt("Masukkan nama proyek yang baru:",project.name);
-   if(name===null || !name.trim()) return;
-   await api("/api/rename",{
-    method:"POST",
-    body:JSON.stringify({projectId:project.id,name:name.trim()})
-   });
-   notify("Nama proyek berhasil diubah.");
-   await Promise.all([loadProjects(),loadHistory()]);
-   return;
+/* ==================== LOGIN / LOGOUT ==================== */
+$("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("loginButton");
+  btn.disabled = true;
+  btn.textContent = "Memeriksa...";
+  try {
+    await api("/api/login", { method: "POST", body: JSON.stringify({ password: $("password").value }) });
+    $("password").value = "";
+    $("loginError").textContent = "";
+    showApp();
+    await refreshAll();
+  } catch (error){
+    $("loginError").textContent = error.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Masuk Dashboard";
   }
-
-  if(action==="delete"){
-   const confirmName=prompt(
-    "PERINGATAN: Menghapus proyek juga menghapus deployment, domain, dan environment variables.\n\nKetik nama proyek ini untuk melanjutkan:\n"+project.name
-   );
-   if(confirmName!==project.name){
-    notify("Penghapusan dibatalkan.");
-    return;
-   }
-   await api("/api/delete",{
-    method:"POST",
-    body:JSON.stringify({projectId:project.id,confirmName})
-   });
-   notify("Proyek berhasil dihapus.");
-   await Promise.all([loadProjects(),loadHistory()]);
-  }
- }catch(error){
-  notify(error.message);
- }
 });
 
-$("loginForm").addEventListener("submit",async event=>{
- event.preventDefault();
- const button=$("loginButton");
- button.disabled=true;
- button.textContent="Memeriksa...";
-
- try{
-  await api("/api/login",{
-   method:"POST",
-   body:JSON.stringify({password:$("password").value})
-  });
-  $("password").value="";
-  $("loginError").textContent="";
-  showApp();
-  await refreshAll();
- }catch(error){
-  $("loginError").textContent=error.message;
- }finally{
-  button.disabled=false;
-  button.textContent="Masuk Dashboard";
- }
-});
-
-$("logoutButton").addEventListener("click",async()=>{
- try{await api("/api/logout",{method:"POST"});}catch{}
- showLogin();
-});
-
-$("searchProject").addEventListener("input",renderProjects);
-$("deployProject").addEventListener("change",updateBranch);
-$("refreshHistory").addEventListener("click",async()=>{
- await loadHistory();
- notify("Riwayat diperbarui.");
-});
-
-$("deployForm").addEventListener("submit",async event=>{
- event.preventDefault();
-
- const projectId=$("deployProject").value;
- const branch=$("deployBranch").value.trim();
- const target=$("deployTarget").value;
- const button=$("deployButton");
- const result=$("deployResult");
-
- if(!projectId || !branch){
-  notify("Pilih proyek dan isi branch.");
-  return;
- }
-
- button.disabled=true;
- button.textContent="Mengirim deployment...";
- result.innerHTML="";
-
- try{
-  const data=await api("/api/deploy",{
-   method:"POST",
-   body:JSON.stringify({projectId,branch,target})
-  });
-
-  const deployment=data.deployment||{};
-  const url=deployment.url||"";
-
-  result.innerHTML=`
-   <div class="result">
-    <b>Permintaan deployment berhasil dikirim.</b>
-    <p class="muted small" style="margin:8px 0 0">Status: ${escapeHTML(deployment.state||"QUEUED")}</p>
-    ${url?`<a class="result-url" href="${escapeHTML(url)}" target="_blank" rel="noopener">${escapeHTML(url)}</a>`:'<p class="muted small" style="margin-top:12px">URL sedang diproses. Periksa riwayat deployment beberapa saat lagi.</p>'}
-    ${url?`<div class="actions" style="margin-top:0"><button class="btn small" id="copyDeployment">Salin URL</button><a class="btn small primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">Buka Website</a></div>`:""}
-    ${deployment.inspectorUrl?`<p style="margin:12px 0 0"><a class="result-url" style="margin:0" target="_blank" rel="noopener" href="${escapeHTML(deployment.inspectorUrl)}">Detail Deployment</a></p>`:""}
-   </div>`;
-
-  if(url) $("copyDeployment").addEventListener("click",()=>copyText(url));
-  notify("Deployment berhasil dikirim ke Vercel.");
-  await loadHistory();
- }catch(error){
-  result.innerHTML=`
-   <div class="result">
-    <b style="color:var(--red)">Deployment gagal</b>
-    <p class="small" style="margin:8px 0 0">${escapeHTML(error.message)}</p>
-   </div>`;
-  notify(error.message);
-  await loadHistory();
- }finally{
-  button.disabled=false;
-  button.textContent="Mulai Deployment";
- }
-});
-
-(async()=>{
- try{
-  await api("/api/session");
-  showApp();
-  await refreshAll();
- }catch{
+$("logoutButton").addEventListener("click", async () => {
+  try { await api("/api/logout", { method: "POST" }); } catch {}
   showLogin();
- }
+});
+
+/* ==================== SEARCH / REFRESH ==================== */
+$("searchProject").addEventListener("input", renderProjects);
+$("deployProject").addEventListener("change", updateBranch);
+$("refreshHistory").addEventListener("click", async () => { await loadHistory(); notify("Riwayat diperbarui."); });
+
+/* ==================== DEPLOY GITHUB ==================== */
+$("deployForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const projectId = $("deployProject").value;
+  const branch = $("deployBranch").value.trim();
+  const target = $("deployTarget").value;
+  const btn = $("deployButton");
+  const result = $("deployResult");
+
+  if (!projectId || !branch){ notify("Pilih proyek dan isi branch."); return; }
+
+  btn.disabled = true;
+  btn.textContent = "Mengirim deployment...";
+  result.innerHTML = "";
+
+  try {
+    const data = await api("/api/deploy", { method: "POST", body: JSON.stringify({ projectId, branch, target }) });
+    const d = data.deployment || {};
+    const url = d.url || "";
+    result.innerHTML = `
+      <div class="result">
+        <p class="result-title">Permintaan deployment berhasil dikirim.</p>
+        <p class="muted small" style="margin:0 0 4px">Status: ${escapeHTML(d.state||"QUEUED")}</p>
+        ${url?`<a class="result-url" href="${escapeHTML(url)}" target="_blank" rel="noopener">${escapeHTML(url)}</a>`
+              :`<p class="muted small" style="margin-top:12px">URL sedang diproses. Periksa riwayat deployment beberapa saat lagi.</p>`}
+        ${url?`<div class="actions" style="margin-top:0"><button type="button" class="btn small" id="copyDeployment">Salin URL</button><a class="btn small primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">Buka Website</a></div>`:""}
+        ${d.inspectorUrl?`<p style="margin:12px 0 0"><a class="result-url" style="margin:0" target="_blank" rel="noopener" href="${escapeHTML(d.inspectorUrl)}">Detail Deployment</a></p>`:""}
+      </div>`;
+    if (url) $("copyDeployment").addEventListener("click", () => copyText(url));
+    notify("Deployment berhasil dikirim ke Vercel.");
+    await loadHistory();
+  } catch (error){
+    result.innerHTML = `
+      <div class="result">
+        <p class="result-title error">Deployment gagal</p>
+        <p class="small" style="margin:0">${escapeHTML(error.message)}</p>
+      </div>`;
+    notify(error.message);
+    await loadHistory();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Mulai Deployment";
+  }
+});
+
+/* ==================== UPLOAD FILES ==================== */
+$("uploadForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const name = $("uploadName").value.trim();
+  const target = $("uploadTarget").value;
+  const btn = $("uploadButton");
+  const result = $("uploadResult");
+
+  if (!name){
+    notify("Isi nama proyek.");
+    $("uploadName").focus();
+    return;
+  }
+  if (!/^[a-zA-Z0-9._-]+$/.test(name)){
+    notify("Nama proyek hanya boleh huruf, angka, titik, strip, underscore.");
+    return;
+  }
+  if (!selectedFiles.length){
+    notify("Pilih minimal satu file untuk diunggah.");
+    return;
+  }
+
+  const total = selectedFiles.reduce((s,f)=>s+f.size, 0);
+  if (total > 50 * 1024 * 1024){
+    const ok = await showConfirm(
+      "Ukuran File Besar",
+      `Total ukuran ${formatSize(total)} melebihi 50MB. Proses upload mungkin gagal. Lanjutkan?`,
+      { confirmText: "Lanjutkan", danger: true }
+    );
+    if (!ok) return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Mengunggah...";
+  result.innerHTML = "";
+
+  try {
+    const fd = new FormData();
+    fd.append("name", name);
+    fd.append("target", target);
+    const existing = projects.find(p => p.name === name);
+    if (existing) fd.append("projectId", existing.id);
+    for (const file of selectedFiles){
+      fd.append("files", file, file._deployPath || file.name);
+    }
+
+    const data = await api("/api/deploy-files", { method: "POST", body: fd });
+    const d = data.deployment || {};
+    const url = d.url || "";
+
+    result.innerHTML = `
+      <div class="result">
+        <p class="result-title">Upload deployment berhasil!</p>
+        <p class="muted small" style="margin:0 0 4px">
+          ${escapeHTML(String(selectedFiles.length))} file · Status: ${escapeHTML(d.state||"QUEUED")}
+        </p>
+        ${url?`<a class="result-url" href="${escapeHTML(url)}" target="_blank" rel="noopener">${escapeHTML(url)}</a>`
+              :`<p class="muted small" style="margin-top:12px">URL sedang diproses. Periksa riwayat beberapa saat lagi.</p>`}
+        ${url?`<div class="actions" style="margin-top:0"><button type="button" class="btn small" id="copyUpload">Salin URL</button><a class="btn small primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">Buka Website</a></div>`:""}
+        ${d.inspectorUrl?`<p style="margin:12px 0 0"><a class="result-url" style="margin:0" target="_blank" rel="noopener" href="${escapeHTML(d.inspectorUrl)}">Detail Deployment</a></p>`:""}
+      </div>`;
+    if (url) $("copyUpload").addEventListener("click", () => copyText(url));
+
+    notify("Deployment berhasil diunggah ke Vercel.");
+    selectedFiles = [];
+    renderFileList();
+    $("uploadName").value = "";
+    await Promise.all([loadProjects(), loadHistory()]);
+  } catch (error){
+    result.innerHTML = `
+      <div class="result">
+        <p class="result-title error">Upload gagal</p>
+        <p class="small" style="margin:0">${escapeHTML(error.message)}</p>
+      </div>`;
+    notify(error.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Deploy Files";
+  }
+});
+
+/* ==================== INIT ==================== */
+setupDropzone();
+
+(async () => {
+  try {
+    await api("/api/session");
+    showApp();
+    await refreshAll();
+  } catch {
+    showLogin();
+  }
 })();
 </script>
 </body>
