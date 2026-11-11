@@ -1,8 +1,8 @@
 
-const VERCEL_API = "https://api.vercel.com";
-const HISTORY_KEY = "ekkvm:history";
-const COOKIE_NAME = "ekkvm_session";
-const SESSION_SECONDS = 43200;
+const API = "https://api.vercel.com";
+const HISTORY_KEY = "ekkvm:history:v1";
+const COOKIE = "ekkvm_session";
+const SESSION_TTL = 43200;
 
 class HttpError extends Error {
   constructor(message, status = 500) {
@@ -11,36 +11,94 @@ class HttpError extends Error {
   }
 }
 
-function json(data, status = 200, extraHeaders = {}) {
+function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
       "Cache-Control": "no-store",
       "X-Content-Type-Options": "nosniff",
-      ...extraHeaders
+      ...headers
     }
   });
 }
 
-function getSecret(env, upper, lower) {
-  return env[upper] || env[lower] || "";
+function getCookie(request) {
+  const cookies = request.headers.get("Cookie") || "";
+  const item = cookies.split(";").map(v => v.trim())
+    .find(v => v.startsWith(COOKIE + "="));
+  return item ? item.slice(COOKIE.length + 1) : "";
 }
 
-function getCookie(request, name) {
-  const cookie = request.headers.get("Cookie") || "";
-  const item = cookie.split(";").map(v => v.trim())
-    .find(v => v.startsWith(name + "="));
-  return item ? item.slice(name.length + 1) : "";
+function base64url(bytes) {
+  let binary = "";
+  for (const byte of new Uint8Array(bytes)) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/g, "");
 }
 
-function randomToken() {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
+function fromBase64url(value) {
+  const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64 + "=".repeat((4 - base64.length % 4) % 4);
+  const binary = atob(padded);
+  return Uint8Array.from(binary, char => char.charCodeAt(0));
 }
 
-function validOrigin(request) {
+async function createSession(password) {
+  const expiry = Date.now() + SESSION_TTL * 1000;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(String(expiry))
+  );
+
+  return expiry + "." + base64url(signature);
+}
+
+async function verifySession(request, password) {
+  if (!password) return false;
+
+  try {
+    const token = getCookie(request);
+    const [expiryText, signatureText] = token.split(".");
+    const expiry = Number(expiryText);
+
+    if (!expiry || expiry <= Date.now() || !signatureText) {
+      return false;
+    }
+
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(password),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+
+    return await crypto.subtle.verify(
+      "HMAC",
+      key,
+      fromBase64url(signatureText),
+      new TextEncoder().encode(String(expiry))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function sameOrigin(request) {
   const origin = request.headers.get("Origin");
   if (!origin) return true;
 
@@ -51,14 +109,20 @@ function validOrigin(request) {
   }
 }
 
+async function readBody(request) {
+  try {
+    return await request.json();
+  } catch {
+    throw new HttpError("Format JSON tidak valid.", 400);
+  }
+}
+
 async function saveHistory(env, item) {
   try {
-    if (!env.HISTORY) return;
-
     const old = await env.HISTORY.get(HISTORY_KEY, "json");
-    const list = Array.isArray(old) ? old : [];
+    const history = Array.isArray(old) ? old : [];
 
-    list.unshift({
+    history.unshift({
       id: crypto.randomUUID(),
       at: Date.now(),
       ...item
@@ -66,45 +130,38 @@ async function saveHistory(env, item) {
 
     await env.HISTORY.put(
       HISTORY_KEY,
-      JSON.stringify(list.slice(0, 200))
+      JSON.stringify(history.slice(0, 300))
     );
   } catch (error) {
     console.error("History error:", error.message);
   }
 }
 
-async function isLoggedIn(request, env) {
-  if (!env.HISTORY) return false;
-
-  const token = getCookie(request, COOKIE_NAME);
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) return false;
-
-  const session = await env.HISTORY.get("session:" + token);
-  return session === "active";
-}
-
-async function vercelFetch(path, env, options = {}) {
-  const token = getSecret(env, "VERCEL_TOKEN", "vercel_token");
+async function vercel(path, env, options = {}) {
+  const token = env.VERCEL_TOKEN;
 
   if (!token) {
     throw new HttpError(
-      "VERCEL_TOKEN belum dipasang di Cloudflare Worker Secrets.",
+      "VERCEL_TOKEN belum dipasang di Cloudflare Secrets.",
       500
     );
   }
 
-  const url = new URL(VERCEL_API + path);
-  const teamId = getSecret(env, "VERCEL_TEAM_ID", "vercel_team_id");
+  const url = new URL(API + path);
 
-  if (teamId) url.searchParams.set("teamId", teamId);
+  if (env.VERCEL_TEAM_ID) {
+    url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
+  }
 
   const response = await fetch(url.toString(), {
     method: options.method || "GET",
     headers: {
-      "Authorization": "Bearer " + token,
+      Authorization: "Bearer " + token,
       "Content-Type": "application/json"
     },
-    body: options.body ? JSON.stringify(options.body) : undefined
+    body: options.body
+      ? JSON.stringify(options.body)
+      : undefined
   });
 
   const raw = await response.text();
@@ -120,7 +177,7 @@ async function vercelFetch(path, env, options = {}) {
     const message =
       data?.error?.message ||
       data?.message ||
-      "Vercel API error (" + response.status + ")";
+      "Vercel API gagal. HTTP " + response.status;
 
     throw new HttpError(message, response.status);
   }
@@ -128,18 +185,12 @@ async function vercelFetch(path, env, options = {}) {
   return data;
 }
 
-async function readBody(request) {
-  try {
-    return await request.json();
-  } catch {
-    throw new HttpError("Format JSON tidak valid.", 400);
-  }
-}
-
 async function getProject(env, id) {
-  if (!id) throw new HttpError("Project ID tidak ditemukan.", 400);
+  if (!id) {
+    throw new HttpError("Project ID tidak ditemukan.", 400);
+  }
 
-  const data = await vercelFetch(
+  const data = await vercel(
     "/v9/projects/" + encodeURIComponent(id),
     env
   );
@@ -148,27 +199,22 @@ async function getProject(env, id) {
 }
 
 async function getDeployments(env, projectId) {
-  if (!projectId) {
-    throw new HttpError("Project ID tidak ditemukan.", 400);
-  }
+  const params = new URLSearchParams({ limit: "100" });
 
-  const params = new URLSearchParams({
-    projectId,
-    limit: "30"
-  });
+  if (projectId) params.set("projectId", projectId);
 
-  const data = await vercelFetch(
+  const data = await vercel(
     "/v7/deployments?" + params.toString(),
     env
   );
 
   return (data.deployments || []).map(d => ({
     id: d.uid || d.id,
-    name: d.name,
+    name: d.name || "",
     url: d.url || "",
     state: d.readyState || d.state || "UNKNOWN",
-    target: d.target || "",
-    createdAt: d.createdAt || d.created || null,
+    target: d.target || "preview",
+    createdAt: Number(d.createdAt || d.created || 0),
     branch:
       d.meta?.githubCommitRef ||
       d.meta?.gitlabCommitRef ||
@@ -179,164 +225,214 @@ async function getDeployments(env, projectId) {
   }));
 }
 
-async function handleApi(request, env) {
+function deploymentResponse(d) {
+  return {
+    id: d.id || "",
+    url: d.url
+      ? (d.url.startsWith("http") ? d.url : "https://" + d.url)
+      : "",
+    state: d.readyState || d.state || "QUEUED",
+    inspectorUrl: d.inspectorUrl || ""
+  };
+}
+
+async function handleAPI(request, env) {
   const url = new URL(request.url);
   const path = url.pathname;
   const method = request.method;
 
-  if (!validOrigin(request)) {
+  if (!sameOrigin(request)) {
     return json({ error: "Origin tidak diizinkan." }, 403);
   }
 
   if (!env.HISTORY) {
     return json({
-      error: "KV belum terhubung. Pasang binding HISTORY ke namespace github-index-manager-history."
+      error: "KV binding HISTORY belum dipasang."
     }, 500);
   }
 
   // LOGIN
   if (path === "/api/login" && method === "POST") {
-    const password = getSecret(env, "ADMIN_PASSWORD", "admin_password");
+    const password = env.ADMIN_PASSWORD;
 
     if (!password) {
       return json({
-        error: "ADMIN_PASSWORD belum dipasang di Worker Secrets."
+        error: "ADMIN_PASSWORD belum dipasang di Cloudflare Secrets."
       }, 500);
-    }
-
-    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-    const failKey = "login-fail:" + ip;
-    const failCount = Number(await env.HISTORY.get(failKey) || 0);
-
-    if (failCount >= 8) {
-      return json({
-        error: "Terlalu banyak percobaan login. Coba lagi nanti."
-      }, 429);
     }
 
     const body = await readBody(request);
 
-    if (typeof body.password !== "string" || body.password !== password) {
-      await env.HISTORY.put(
-        failKey,
-        String(failCount + 1),
-        { expirationTtl: 900 }
-      );
-
+    if (
+      typeof body.password !== "string" ||
+      body.password !== password
+    ) {
       return json({ error: "Password admin salah." }, 401);
     }
 
-    await env.HISTORY.delete(failKey);
-
-    const token = randomToken();
-
-    await env.HISTORY.put(
-      "session:" + token,
-      "active",
-      { expirationTtl: SESSION_SECONDS }
-    );
+    const session = await createSession(password);
 
     return json(
       { success: true },
       200,
       {
         "Set-Cookie":
-          COOKIE_NAME + "=" + token +
+          COOKIE + "=" + session +
           "; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=" +
-          SESSION_SECONDS
+          SESSION_TTL
       }
     );
   }
 
-  // CEK SESSION
+  // SESSION CHECK
   if (path === "/api/session" && method === "GET") {
-    const logged = await isLoggedIn(request, env);
-    return logged
+    const valid = await verifySession(
+      request,
+      env.ADMIN_PASSWORD
+    );
+
+    return valid
       ? json({ authenticated: true })
       : json({ error: "Belum login." }, 401);
   }
 
   // LOGOUT
   if (path === "/api/logout" && method === "POST") {
-    const token = getCookie(request, COOKIE_NAME);
-
-    if (token) {
-      await env.HISTORY.delete("session:" + token);
-    }
-
     return json(
       { success: true },
       200,
       {
         "Set-Cookie":
-          COOKIE_NAME + "=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0"
+          COOKIE + "=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0"
       }
     );
   }
 
-  // Semua route selanjutnya harus login
-  if (!(await isLoggedIn(request, env))) {
+  // AUTH UNTUK SEMUA MENU
+  if (!(await verifySession(request, env.ADMIN_PASSWORD))) {
     return json({ error: "Sesi login tidak valid." }, 401);
   }
 
   try {
+    // ===========================
     // LIST PROJECTS
+    // ===========================
     if (path === "/api/projects" && method === "GET") {
-      const data = await vercelFetch("/v10/projects?limit=100", env);
+      const data = await vercel(
+        "/v10/projects?limit=100",
+        env
+      );
 
       const result = (data.projects || []).map(p => {
         const link = p.link || {};
-        const repo = [link.org, link.repo]
-          .filter(Boolean).join("/");
-
-        const canDeploy =
-          link.type === "github" &&
-          Boolean(link.repoId || (link.org && link.repo));
 
         return {
           id: p.id,
           name: p.name,
-          framework: p.framework || "Tidak diketahui",
-          repository: repo,
+          framework: p.framework || "-",
+          repository: link.org && link.repo
+            ? link.org + "/" + link.repo
+            : "",
           branch: link.productionBranch || "main",
-          canDeploy,
-          createdAt: p.createdAt || null
+          canDeploy:
+            link.type === "github" &&
+            Boolean(
+              link.repoId ||
+              (link.org && link.repo)
+            )
         };
       });
 
       return json({ projects: result });
     }
 
-    // HISTORY
-    if (path === "/api/history" && method === "GET") {
-      const history =
-        await env.HISTORY.get(HISTORY_KEY, "json") || [];
-
-      return json({
-        history: Array.isArray(history) ? history : []
-      });
-    }
-
-    // DEPLOYMENT LIST
+    // ===========================
+    // LIST DEPLOYMENTS
+    // ===========================
     if (path === "/api/deployments" && method === "GET") {
       const projectId = url.searchParams.get("projectId");
+
+      if (!projectId) {
+        throw new HttpError("Project ID diperlukan.", 400);
+      }
+
       const deployments = await getDeployments(env, projectId);
 
       return json({ deployments });
     }
 
+    // ===========================
+    // HISTORY
+    // ===========================
+    if (path === "/api/history" && method === "GET") {
+      const stored =
+        await env.HISTORY.get(HISTORY_KEY, "json") || [];
+
+      let remote = [];
+
+      try {
+        remote = await getDeployments(env);
+      } catch (error) {
+        console.error("Vercel history error:", error.message);
+      }
+
+      const remoteHistory = remote.map(d => ({
+        id: "vercel-" + d.id,
+        deploymentId: d.id,
+        at: d.createdAt || Date.now(),
+        action: "Deployment Vercel",
+        title: d.name || "Proyek",
+        detail:
+          (d.target || "preview") +
+          (d.branch ? " · Branch " + d.branch : "") +
+          (d.errorMessage ? " · " + d.errorMessage : ""),
+        status: d.state,
+        url: d.url
+          ? "https://" + d.url
+          : ""
+      }));
+
+      const remoteIds = new Set(
+        remoteHistory.map(x => x.deploymentId)
+      );
+
+      const localHistory = (Array.isArray(stored) ? stored : [])
+        .filter(x =>
+          !x.deploymentId ||
+          !remoteIds.has(x.deploymentId)
+        );
+
+      const history = [
+        ...remoteHistory,
+        ...localHistory
+      ]
+      .sort((a, b) => Number(b.at) - Number(a.at))
+      .slice(0, 200);
+
+      return json({ history });
+    }
+
+    // ===========================
     // RENAME PROJECT
+    // ===========================
     if (path === "/api/rename" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
       const name = String(body.name || "").trim();
 
-      if (!name || name.length > 100) {
-        throw new HttpError("Nama proyek tidak valid.", 400);
+      if (
+        !name ||
+        name.length > 100 ||
+        !/^[a-zA-Z0-9._-]+$/.test(name)
+      ) {
+        throw new HttpError(
+          "Nama proyek tidak valid. Gunakan huruf, angka, titik, strip, atau underscore.",
+          400
+        );
       }
 
       try {
-        const result = await vercelFetch(
+        const result = await vercel(
           "/v9/projects/" + encodeURIComponent(project.id),
           env,
           {
@@ -348,11 +444,14 @@ async function handleApi(request, env) {
         await saveHistory(env, {
           action: "Rename",
           title: project.name,
-          detail: "Nama proyek diubah menjadi " + name,
+          detail: "Nama proyek menjadi " + name,
           status: "SUCCESS"
         });
 
-        return json({ success: true, project: result.project || result });
+        return json({
+          success: true,
+          project: result.project || result
+        });
       } catch (error) {
         await saveHistory(env, {
           action: "Rename",
@@ -364,20 +463,22 @@ async function handleApi(request, env) {
       }
     }
 
+    // ===========================
     // DELETE PROJECT
+    // ===========================
     if (path === "/api/delete" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
 
       if (body.confirmName !== project.name) {
         throw new HttpError(
-          "Konfirmasi nama proyek tidak cocok.",
+          "Nama konfirmasi tidak cocok.",
           400
         );
       }
 
       try {
-        await vercelFetch(
+        await vercel(
           "/v9/projects/" + encodeURIComponent(project.id),
           env,
           { method: "DELETE" }
@@ -386,7 +487,7 @@ async function handleApi(request, env) {
         await saveHistory(env, {
           action: "Delete",
           title: project.name,
-          detail: "Proyek berhasil dihapus dari Vercel.",
+          detail: "Proyek berhasil dihapus.",
           status: "SUCCESS"
         });
 
@@ -402,7 +503,9 @@ async function handleApi(request, env) {
       }
     }
 
-    // DEPLOY DARI GITHUB
+    // ===========================
+    // DEPLOY FROM GITHUB
+    // ===========================
     if (path === "/api/deploy" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
@@ -410,20 +513,17 @@ async function handleApi(request, env) {
       const branch = String(body.branch || "").trim();
       const target = body.target === "production"
         ? "production"
-        : null;
+        : "preview";
 
       if (!branch || branch.length > 200) {
-        throw new HttpError("Nama branch tidak valid.", 400);
+        throw new HttpError("Branch tidak valid.", 400);
       }
 
       const link = project.link || {};
 
-      if (
-        link.type !== "github" ||
-        !(link.repoId || (link.org && link.repo))
-      ) {
+      if (link.type !== "github") {
         throw new HttpError(
-          "Proyek ini belum terhubung ke repository GitHub di Vercel.",
+          "Proyek belum menggunakan GitHub Integration.",
           400
         );
       }
@@ -435,9 +535,14 @@ async function handleApi(request, env) {
 
       if (link.repoId) {
         gitSource.repoId = link.repoId;
-      } else {
+      } else if (link.org && link.repo) {
         gitSource.org = link.org;
         gitSource.repo = link.repo;
+      } else {
+        throw new HttpError(
+          "Informasi repository GitHub tidak ditemukan.",
+          400
+        );
       }
 
       const payload = {
@@ -446,10 +551,12 @@ async function handleApi(request, env) {
         gitSource
       };
 
-      if (target) payload.target = target;
+      if (target === "production") {
+        payload.target = "production";
+      }
 
       try {
-        const result = await vercelFetch(
+        const result = await vercel(
           "/v13/deployments?forceNew=1",
           env,
           {
@@ -461,8 +568,8 @@ async function handleApi(request, env) {
         await saveHistory(env, {
           action: "Deploy",
           title: project.name,
-          detail: "Branch " + branch + " · " +
-            (target || "preview"),
+          detail: "Branch " + branch + " · " + target,
+          deploymentId: result.id,
           status: result.readyState || "QUEUED",
           url: result.url
             ? "https://" + result.url
@@ -471,12 +578,7 @@ async function handleApi(request, env) {
 
         return json({
           success: true,
-          deployment: {
-            id: result.id,
-            url: result.url || "",
-            state: result.readyState || "QUEUED",
-            inspectorUrl: result.inspectorUrl || ""
-          }
+          deployment: deploymentResponse(result)
         });
       } catch (error) {
         await saveHistory(env, {
@@ -489,30 +591,35 @@ async function handleApi(request, env) {
       }
     }
 
-    // REDEPLOY DEPLOYMENT TERBARU
+    // ===========================
+    // REDEPLOY LATEST
+    // ===========================
     if (path === "/api/redeploy" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
 
       const deployments = await getDeployments(env, project.id);
+
+      deployments.sort(
+        (a, b) => Number(b.createdAt) - Number(a.createdAt)
+      );
+
       const latest = deployments[0];
 
       if (!latest || !latest.id) {
         throw new HttpError(
-          "Belum ada deployment yang bisa di-redeploy.",
+          "Belum ada deployment untuk di-redeploy.",
           404
         );
       }
 
       try {
-        const result = await vercelFetch(
+        const result = await vercel(
           "/v13/deployments?forceNew=1",
           env,
           {
             method: "POST",
             body: {
-              name: project.name,
-              project: project.id,
               deploymentId: latest.id,
               withLatestCommit: true
             }
@@ -522,7 +629,8 @@ async function handleApi(request, env) {
         await saveHistory(env, {
           action: "Redeploy",
           title: project.name,
-          detail: "Menjalankan ulang deployment terbaru.",
+          detail: "Mengulang deployment terbaru.",
+          deploymentId: result.id,
           status: result.readyState || "QUEUED",
           url: result.url
             ? "https://" + result.url
@@ -531,12 +639,7 @@ async function handleApi(request, env) {
 
         return json({
           success: true,
-          deployment: {
-            id: result.id,
-            url: result.url || "",
-            state: result.readyState || "QUEUED",
-            inspectorUrl: result.inspectorUrl || ""
-          }
+          deployment: deploymentResponse(result)
         });
       } catch (error) {
         await saveHistory(env, {
@@ -552,10 +655,10 @@ async function handleApi(request, env) {
     return json({ error: "Endpoint tidak ditemukan." }, 404);
 
   } catch (error) {
-    console.error(error);
+    console.error("API error:", error);
 
     return json(
-      { error: error.message || "Server error." },
+      { error: error.message || "Terjadi kesalahan server." },
       error.status || 500
     );
   }
@@ -565,20 +668,16 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    try {
-      if (url.pathname.startsWith("/api/")) {
-        return await handleApi(request, env);
-      }
-
-      if (env.ASSETS) {
-        return env.ASSETS.fetch(request);
-      }
-
-      return new Response("Asset binding ASSETS belum dipasang.", {
-        status: 500
-      });
-    } catch (error) {
-      return json({ error: error.message || "Internal error." }, 500);
+    if (url.pathname.startsWith("/api/")) {
+      return handleAPI(request, env);
     }
+
+    if (env.ASSETS) {
+      return env.ASSETS.fetch(request);
+    }
+
+    return new Response("Asset binding ASSETS belum dipasang.", {
+      status: 500
+    });
   }
 };
