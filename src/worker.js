@@ -196,16 +196,39 @@ function deploymentResponse(d) {
 }
 
 /* ============================================================
-   Helper: konversi ArrayBuffer ke base64 (chunked biar aman)
+   Helper: Upload file binary ke Vercel API /v2/files
    ============================================================ */
-function arrayBufferToBase64(buffer) {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  const CHUNK = 8192;
-  for (let i = 0; i < bytes.length; i += CHUNK) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+async function uploadFileToVercel(env, fileName, buffer) {
+  // Hitung SHA-1 digest (wajib untuk Vercel)
+  const digest = await crypto.subtle.digest("SHA-1", buffer);
+  const sha1 = Array.from(new Uint8Array(digest))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  const token = env.VERCEL_TOKEN;
+  const url = new URL(API + "/v2/files");
+  if (env.VERCEL_TEAM_ID) {
+    url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
   }
-  return btoa(binary);
+
+  const response = await fetch(url.toString(), {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/octet-stream",
+      "x-vercel-digest": sha1
+    },
+    body: buffer
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new HttpError(
+      "Upload file " + fileName + " gagal (HTTP " + response.status + "): " + text,
+      response.status
+    );
+  }
+  return sha1;
 }
 
 async function handleAPI(request, env) {
@@ -470,7 +493,6 @@ async function handleAPI(request, env) {
 
     // ============================================================
     // DEPLOY DARI FILE UPLOAD (multipart/form-data)
-    // Endpoint: POST /api/deploy-files
     // ============================================================
     if (path === "/api/deploy-files" && method === "POST") {
       const contentType = request.headers.get("Content-Type") || "";
@@ -519,9 +541,13 @@ async function handleAPI(request, env) {
             400
           );
         }
+
+        // Upload file binary ke Vercel API, dapatkan SHA
+        const sha = await uploadFileToVercel(env, fileName, buffer);
         vercelFiles.push({
           file: fileName,
-          data: arrayBufferToBase64(buffer)
+          sha: sha,
+          size: buffer.byteLength
         });
       }
 
@@ -532,14 +558,16 @@ async function handleAPI(request, env) {
       const payload = {
         name,
         files: vercelFiles,
-        target
+        target,
+        projectSettings: {
+          framework: null // Mencegah auto-detect framework yang minta konfirmasi
+        }
       };
       if (projectId) payload.project = projectId;
 
       try {
-        // PERBAIKAN: Menambahkan ?skipAutoDetectionConfirmation=1
         const result = await vercel(
-          "/v13/deployments?skipAutoDetectionConfirmation=1",
+          "/v13/deployments",
           env,
           { method: "POST", body: payload }
         );
