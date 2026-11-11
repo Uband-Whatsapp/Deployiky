@@ -196,7 +196,7 @@ function deploymentResponse(d) {
 }
 
 /* ============================================================
-   Helper: Upload file binary ke Vercel API /v2/files
+   PERBAIKAN: Upload file ke endpoint yang benar (/v2/now/files)
    ============================================================ */
 async function uploadFileToVercel(env, fileName, buffer) {
   // Hitung SHA-1 digest (wajib untuk Vercel)
@@ -206,7 +206,8 @@ async function uploadFileToVercel(env, fileName, buffer) {
     .join("");
 
   const token = env.VERCEL_TOKEN;
-  const url = new URL(API + "/v2/files");
+  // PERBAIKAN: Gunakan /v2/now/files, bukan /v2/files
+  const url = new URL(API + "/v2/now/files");
   if (env.VERCEL_TEAM_ID) {
     url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
   }
