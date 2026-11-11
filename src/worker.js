@@ -45,16 +45,11 @@ function fromBase64url(value) {
 async function createSession(password) {
   const expiry = Date.now() + SESSION_TTL * 1000;
   const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(password),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
+    "raw", new TextEncoder().encode(password),
+    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
   );
   const signature = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(String(expiry))
+    "HMAC", key, new TextEncoder().encode(String(expiry))
   );
   return expiry + "." + base64url(signature);
 }
@@ -67,54 +62,34 @@ async function verifySession(request, password) {
     const expiry = Number(expiryText);
     if (!expiry || expiry <= Date.now() || !signatureText) return false;
     const key = await crypto.subtle.importKey(
-      "raw",
-      new TextEncoder().encode(password),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"]
+      "raw", new TextEncoder().encode(password),
+      { name: "HMAC", hash: "SHA-256" }, false, ["verify"]
     );
     return await crypto.subtle.verify(
-      "HMAC",
-      key,
-      fromBase64url(signatureText),
+      "HMAC", key, fromBase64url(signatureText),
       new TextEncoder().encode(String(expiry))
     );
-  } catch {
-    return false;
-  }
+  } catch { return false; }
 }
 
 function sameOrigin(request) {
   const origin = request.headers.get("Origin");
   if (!origin) return true;
-  try {
-    return new URL(origin).origin === new URL(request.url).origin;
-  } catch {
-    return false;
-  }
+  try { return new URL(origin).origin === new URL(request.url).origin; }
+  catch { return false; }
 }
 
 async function readBody(request) {
-  try {
-    return await request.json();
-  } catch {
-    throw new HttpError("Format JSON tidak valid.", 400);
-  }
+  try { return await request.json(); }
+  catch { throw new HttpError("Format JSON tidak valid.", 400); }
 }
 
 async function saveHistory(env, item) {
   try {
     const old = await env.HISTORY.get(HISTORY_KEY, "json");
     const history = Array.isArray(old) ? old : [];
-    history.unshift({
-      id: crypto.randomUUID(),
-      at: Date.now(),
-      ...item
-    });
-    await env.HISTORY.put(
-      HISTORY_KEY,
-      JSON.stringify(history.slice(0, 300))
-    );
+    history.unshift({ id: crypto.randomUUID(), at: Date.now(), ...item });
+    await env.HISTORY.put(HISTORY_KEY, JSON.stringify(history.slice(0, 300)));
   } catch (error) {
     console.error("History error:", error.message);
   }
@@ -122,16 +97,9 @@ async function saveHistory(env, item) {
 
 async function vercel(path, env, options = {}) {
   const token = env.VERCEL_TOKEN;
-  if (!token) {
-    throw new HttpError(
-      "VERCEL_TOKEN belum dipasang di Cloudflare Secrets.",
-      500
-    );
-  }
+  if (!token) throw new HttpError("VERCEL_TOKEN belum dipasang di Cloudflare Secrets.", 500);
   const url = new URL(API + path);
-  if (env.VERCEL_TEAM_ID) {
-    url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
-  }
+  if (env.VERCEL_TEAM_ID) url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
   const response = await fetch(url.toString(), {
     method: options.method || "GET",
     headers: {
@@ -142,16 +110,10 @@ async function vercel(path, env, options = {}) {
   });
   const raw = await response.text();
   let data = {};
-  try {
-    data = raw ? JSON.parse(raw) : {};
-  } catch {
-    data = { message: raw };
-  }
+  try { data = raw ? JSON.parse(raw) : {}; }
+  catch { data = { message: raw }; }
   if (!response.ok) {
-    const message =
-      data?.error?.message ||
-      data?.message ||
-      "Vercel API gagal. HTTP " + response.status;
+    const message = data?.error?.message || data?.message || "Vercel API gagal. HTTP " + response.status;
     throw new HttpError(message, response.status);
   }
   return data;
@@ -174,42 +136,26 @@ async function getDeployments(env, projectId) {
     state: d.readyState || d.state || "UNKNOWN",
     target: d.target || "preview",
     createdAt: Number(d.createdAt || d.created || 0),
-    branch:
-      d.meta?.githubCommitRef ||
-      d.meta?.gitlabCommitRef ||
-      d.gitSource?.ref ||
-      "",
+    branch: d.meta?.githubCommitRef || d.meta?.gitlabCommitRef || d.gitSource?.ref || "",
     inspectorUrl: d.inspectorUrl || "",
     errorMessage: d.errorMessage || ""
   }));
 }
 
-/* ============================================================
-   OTOMATISASI: Matikan proteksi Vercel Authentication
-   ============================================================ */
 async function disableProtection(env, idOrName) {
   try {
     await vercel("/v9/projects/" + encodeURIComponent(idOrName), env, {
       method: "PATCH",
-      body: { 
-        ssoProtection: null, 
-        passwordProtection: null 
-      }
+      body: { ssoProtection: null, passwordProtection: null }
     });
   } catch (error) {
     console.error("Gagal mematikan proteksi:", error.message);
   }
 }
 
-/* ============================================================
-   PERBAIKAN: Tampilkan URL bersih (nama-proyek.vercel.app)
-   ============================================================ */
 function deploymentResponse(d, projectName) {
   let cleanUrl = "";
-  if (projectName) {
-    cleanUrl = `https://${projectName}.vercel.app`;
-  }
-
+  if (projectName) cleanUrl = `https://${projectName}.vercel.app`;
   return {
     id: d.id || "",
     url: cleanUrl || (d.url ? (d.url.startsWith("http") ? d.url : "https://" + d.url) : ""),
@@ -218,20 +164,14 @@ function deploymentResponse(d, projectName) {
   };
 }
 
-/* ============================================================
-   PERBAIKAN: Upload file ke endpoint yang benar (/v2/now/files)
-   ============================================================ */
 async function uploadFileToVercel(env, fileName, buffer) {
   const digest = await crypto.subtle.digest("SHA-1", buffer);
   const sha1 = Array.from(new Uint8Array(digest))
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("");
+    .map(b => b.toString(16).padStart(2, "0")).join("");
 
   const token = env.VERCEL_TOKEN;
   const url = new URL(API + "/v2/now/files");
-  if (env.VERCEL_TEAM_ID) {
-    url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
-  }
+  if (env.VERCEL_TEAM_ID) url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
 
   const response = await fetch(url.toString(), {
     method: "POST",
@@ -258,86 +198,55 @@ async function handleAPI(request, env) {
   const path = url.pathname;
   const method = request.method;
 
-  if (!sameOrigin(request)) {
-    return json({ error: "Origin tidak diizinkan." }, 403);
-  }
-  if (!env.HISTORY) {
-    return json({ error: "KV binding HISTORY belum dipasang." }, 500);
-  }
+  if (!sameOrigin(request)) return json({ error: "Origin tidak diizinkan." }, 403);
+  if (!env.HISTORY) return json({ error: "KV binding HISTORY belum dipasang." }, 500);
 
-  // ===========================
   // LOGIN
-  // ===========================
   if (path === "/api/login" && method === "POST") {
     const password = env.ADMIN_PASSWORD;
-    if (!password) {
-      return json({
-        error: "ADMIN_PASSWORD belum dipasang di Cloudflare Secrets."
-      }, 500);
-    }
+    if (!password) return json({ error: "ADMIN_PASSWORD belum dipasang di Cloudflare Secrets." }, 500);
     const body = await readBody(request);
     if (typeof body.password !== "string" || body.password !== password) {
       return json({ error: "Password admin salah." }, 401);
     }
     const session = await createSession(password);
     return json({ success: true }, 200, {
-      "Set-Cookie":
-        COOKIE + "=" + session +
-        "; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=" +
-        SESSION_TTL
+      "Set-Cookie": COOKIE + "=" + session + "; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=" + SESSION_TTL
     });
   }
 
-  // ===========================
-  // SESSION CHECK
-  // ===========================
   if (path === "/api/session" && method === "GET") {
     const valid = await verifySession(request, env.ADMIN_PASSWORD);
-    return valid
-      ? json({ authenticated: true })
-      : json({ error: "Belum login." }, 401);
+    return valid ? json({ authenticated: true }) : json({ error: "Belum login." }, 401);
   }
 
-  // ===========================
-  // LOGOUT
-  // ===========================
   if (path === "/api/logout" && method === "POST") {
     return json({ success: true }, 200, {
-      "Set-Cookie":
-        COOKIE + "=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0"
+      "Set-Cookie": COOKIE + "=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0"
     });
   }
 
-  // Auth gate untuk endpoint lain
   if (!(await verifySession(request, env.ADMIN_PASSWORD))) {
     return json({ error: "Sesi login tidak valid." }, 401);
   }
 
   try {
-    // ===========================
     // LIST PROJECTS
-    // ===========================
     if (path === "/api/projects" && method === "GET") {
       const data = await vercel("/v10/projects?limit=100", env);
       const result = (data.projects || []).map(p => {
         const link = p.link || {};
         return {
-          id: p.id,
-          name: p.name,
-          framework: p.framework || "-",
+          id: p.id, name: p.name, framework: p.framework || "-",
           repository: link.org && link.repo ? link.org + "/" + link.repo : "",
           branch: link.productionBranch || "main",
-          canDeploy:
-            link.type === "github" &&
-            Boolean(link.repoId || (link.org && link.repo))
+          canDeploy: link.type === "github" && Boolean(link.repoId || (link.org && link.repo))
         };
       });
       return json({ projects: result });
     }
 
-    // ===========================
     // LIST DEPLOYMENTS
-    // ===========================
     if (path === "/api/deployments" && method === "GET") {
       const projectId = url.searchParams.get("projectId");
       if (!projectId) throw new HttpError("Project ID diperlukan.", 400);
@@ -345,180 +254,90 @@ async function handleAPI(request, env) {
       return json({ deployments });
     }
 
-    // ===========================
     // HISTORY
-    // ===========================
     if (path === "/api/history" && method === "GET") {
       const stored = await env.HISTORY.get(HISTORY_KEY, "json") || [];
       let remote = [];
-      try {
-        remote = await getDeployments(env);
-      } catch (error) {
-        console.error("Vercel history error:", error.message);
-      }
+      try { remote = await getDeployments(env); }
+      catch (error) { console.error("Vercel history error:", error.message); }
       const remoteHistory = remote.map(d => ({
-        id: "vercel-" + d.id,
-        deploymentId: d.id,
-        at: d.createdAt || Date.now(),
-        action: "Deployment Vercel",
-        title: d.name || "Proyek",
-        detail:
-          (d.target || "preview") +
-          (d.branch ? " · Branch " + d.branch : "") +
-          (d.errorMessage ? " · " + d.errorMessage : ""),
-        status: d.state,
-        url: d.url ? "https://" + d.url : ""
+        id: "vercel-" + d.id, deploymentId: d.id, at: d.createdAt || Date.now(),
+        action: "Deployment Vercel", title: d.name || "Proyek",
+        detail: (d.target || "preview") + (d.branch ? " · Branch " + d.branch : "") + (d.errorMessage ? " · " + d.errorMessage : ""),
+        status: d.state, url: d.url ? "https://" + d.url : ""
       }));
       const remoteIds = new Set(remoteHistory.map(x => x.deploymentId));
       const localHistory = (Array.isArray(stored) ? stored : [])
         .filter(x => !x.deploymentId || !remoteIds.has(x.deploymentId));
       const history = [...remoteHistory, ...localHistory]
-        .sort((a, b) => Number(b.at) - Number(a.at))
-        .slice(0, 200);
+        .sort((a, b) => Number(b.at) - Number(a.at)).slice(0, 200);
       return json({ history });
     }
 
-    // ===========================
-    // RENAME PROJECT
-    // ===========================
+    // RENAME
     if (path === "/api/rename" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
       const name = String(body.name || "").trim();
       if (!name || name.length > 100 || !/^[a-zA-Z0-9._-]+$/.test(name)) {
-        throw new HttpError(
-          "Nama proyek tidak valid. Gunakan huruf, angka, titik, strip, atau underscore.",
-          400
-        );
+        throw new HttpError("Nama proyek tidak valid. Gunakan huruf, angka, titik, strip, atau underscore.", 400);
       }
       try {
-        const result = await vercel(
-          "/v9/projects/" + encodeURIComponent(project.id),
-          env,
-          { method: "PATCH", body: { name } }
-        );
-        await saveHistory(env, {
-          action: "Rename",
-          title: project.name,
-          detail: "Nama proyek menjadi " + name,
-          status: "SUCCESS"
-        });
+        const result = await vercel("/v9/projects/" + encodeURIComponent(project.id), env, { method: "PATCH", body: { name } });
+        await saveHistory(env, { action: "Rename", title: project.name, detail: "Nama proyek menjadi " + name, status: "SUCCESS" });
         return json({ success: true, project: result.project || result });
       } catch (error) {
-        await saveHistory(env, {
-          action: "Rename",
-          title: project.name,
-          detail: error.message,
-          status: "ERROR"
-        });
+        await saveHistory(env, { action: "Rename", title: project.name, detail: error.message, status: "ERROR" });
         throw error;
       }
     }
 
-    // ===========================
-    // DELETE PROJECT
-    // ===========================
+    // DELETE
     if (path === "/api/delete" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
-      if (body.confirmName !== project.name) {
-        throw new HttpError("Nama konfirmasi tidak cocok.", 400);
-      }
+      if (body.confirmName !== project.name) throw new HttpError("Nama konfirmasi tidak cocok.", 400);
       try {
-        await vercel(
-          "/v9/projects/" + encodeURIComponent(project.id),
-          env,
-          { method: "DELETE" }
-        );
-        await saveHistory(env, {
-          action: "Delete",
-          title: project.name,
-          detail: "Proyek berhasil dihapus.",
-          status: "SUCCESS"
-        });
+        await vercel("/v9/projects/" + encodeURIComponent(project.id), env, { method: "DELETE" });
+        await saveHistory(env, { action: "Delete", title: project.name, detail: "Proyek berhasil dihapus.", status: "SUCCESS" });
         return json({ success: true });
       } catch (error) {
-        await saveHistory(env, {
-          action: "Delete",
-          title: project.name,
-          detail: error.message,
-          status: "ERROR"
-        });
+        await saveHistory(env, { action: "Delete", title: project.name, detail: error.message, status: "ERROR" });
         throw error;
       }
     }
 
-    // ===========================
-    // DEPLOY FROM GITHUB
-    // ===========================
+    // DEPLOY GITHUB
     if (path === "/api/deploy" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
       const branch = String(body.branch || "").trim();
       const target = body.target === "production" ? "production" : "preview";
-      if (!branch || branch.length > 200) {
-        throw new HttpError("Branch tidak valid.", 400);
-      }
+      if (!branch || branch.length > 200) throw new HttpError("Branch tidak valid.", 400);
       const link = project.link || {};
-      if (link.type !== "github") {
-        throw new HttpError(
-          "Proyek belum menggunakan GitHub Integration.",
-          400
-        );
-      }
+      if (link.type !== "github") throw new HttpError("Proyek belum menggunakan GitHub Integration.", 400);
       const gitSource = { type: "github", ref: branch };
-      if (link.repoId) {
-        gitSource.repoId = link.repoId;
-      } else if (link.org && link.repo) {
-        gitSource.org = link.org;
-        gitSource.repo = link.repo;
-      } else {
-        throw new HttpError(
-          "Informasi repository GitHub tidak ditemukan.",
-          400
-        );
-      }
-      const payload = {
-        name: project.name,
-        project: project.id,
-        gitSource
-      };
+      if (link.repoId) gitSource.repoId = link.repoId;
+      else if (link.org && link.repo) { gitSource.org = link.org; gitSource.repo = link.repo; }
+      else throw new HttpError("Informasi repository GitHub tidak ditemukan.", 400);
+      const payload = { name: project.name, project: project.id, gitSource };
       if (target === "production") payload.target = "production";
       try {
-        const result = await vercel(
-          "/v13/deployments?forceNew=1",
-          env,
-          { method: "POST", body: payload }
-        );
-        
-        // OTOMATIS: Matikan proteksi
+        const result = await vercel("/v13/deployments?forceNew=1", env, { method: "POST", body: payload });
         await disableProtection(env, project.id);
-
         await saveHistory(env, {
-          action: "Deploy",
-          title: project.name,
-          detail: "Branch " + branch + " · " + target,
-          deploymentId: result.id,
-          status: result.readyState || "QUEUED",
-          url: result.url ? "https://" + result.url : ""
+          action: "Deploy", title: project.name, detail: "Branch " + branch + " · " + target,
+          deploymentId: result.id, status: result.readyState || "QUEUED", url: result.url ? "https://" + result.url : ""
         });
-        return json({
-          success: true,
-          deployment: deploymentResponse(result, project.name) // Gunakan URL bersih
-        });
+        return json({ success: true, deployment: deploymentResponse(result, project.name) });
       } catch (error) {
-        await saveHistory(env, {
-          action: "Deploy",
-          title: project.name,
-          detail: "Branch " + branch + " · " + error.message,
-          status: "ERROR"
-        });
+        await saveHistory(env, { action: "Deploy", title: project.name, detail: "Branch " + branch + " · " + error.message, status: "ERROR" });
         throw error;
       }
     }
 
     // ============================================================
-    // DEPLOY DARI FILE UPLOAD (multipart/form-data)
+    // DEPLOY FILES (DENGAN AUTO-INJECT vercel.json)
     // ============================================================
     if (path === "/api/deploy-files" && method === "POST") {
       const contentType = request.headers.get("Content-Type") || "";
@@ -527,28 +346,18 @@ async function handleAPI(request, env) {
       }
 
       let formData;
-      try {
-        formData = await request.formData();
-      } catch {
-        throw new HttpError("Gagal membaca form data.", 400);
-      }
+      try { formData = await request.formData(); }
+      catch { throw new HttpError("Gagal membaca form data.", 400); }
 
       const name = String(formData.get("name") || "").trim();
       const projectId = String(formData.get("projectId") || "").trim();
-      const target = formData.get("target") === "production"
-        ? "production"
-        : "preview";
+      const target = formData.get("target") === "production" ? "production" : "preview";
       const fileEntries = formData.getAll("files");
 
       if (!name || name.length > 100 || !/^[a-zA-Z0-9._-]+$/.test(name)) {
-        throw new HttpError(
-          "Nama proyek tidak valid. Gunakan huruf, angka, titik, strip, atau underscore (maks 100 karakter).",
-          400
-        );
+        throw new HttpError("Nama proyek tidak valid. Gunakan huruf, angka, titik, strip, atau underscore (maks 100 karakter).", 400);
       }
-      if (!fileEntries.length) {
-        throw new HttpError("Tidak ada file yang diunggah.", 400);
-      }
+      if (!fileEntries.length) throw new HttpError("Tidak ada file yang diunggah.", 400);
 
       const vercelFiles = [];
       let totalSize = 0;
@@ -561,113 +370,86 @@ async function handleAPI(request, env) {
 
         const buffer = await entry.arrayBuffer();
         totalSize += buffer.byteLength;
-        if (totalSize > MAX_TOTAL) {
-          throw new HttpError(
-            "Total ukuran file melebihi 50MB. Upload lebih sedikit file atau gunakan mode GitHub.",
-            400
-          );
-        }
+        if (totalSize > MAX_TOTAL) throw new HttpError("Total ukuran file melebihi 50MB.", 400);
 
         const sha = await uploadFileToVercel(env, fileName, buffer);
-        vercelFiles.push({
-          file: fileName,
-          sha: sha,
-          size: buffer.byteLength
-        });
+        vercelFiles.push({ file: fileName, sha, size: buffer.byteLength });
       }
 
-      if (!vercelFiles.length) {
-        throw new HttpError("File tidak valid.", 400);
+      if (!vercelFiles.length) throw new HttpError("File tidak valid.", 400);
+
+      // ============================================================
+      // AUTO-INJECT vercel.json
+      // Kalau tidak ada index.html di root dan belum ada vercel.json,
+      // buat otomatis yang rewrite "/" ke file .html pertama.
+      // ============================================================
+      const hasIndex = vercelFiles.some(f => f.file === "index.html");
+      const hasVercelJson = vercelFiles.some(f => f.file === "vercel.json");
+
+      if (!hasIndex && !hasVercelJson) {
+        const firstHtml = vercelFiles.find(f => /\.html?$/i.test(f.file));
+        if (firstHtml) {
+          const vercelConfig = {
+            rewrites: [
+              { source: "/", destination: "/" + firstHtml.file }
+            ]
+          };
+          try {
+            const configBytes = new TextEncoder().encode(JSON.stringify(vercelConfig, null, 2));
+            const sha = await uploadFileToVercel(env, "vercel.json", configBytes.buffer);
+            vercelFiles.push({
+              file: "vercel.json",
+              sha,
+              size: configBytes.byteLength
+            });
+            console.log("Auto-inject vercel.json → rewrite / ke /" + firstHtml.file);
+          } catch (err) {
+            console.error("Gagal inject vercel.json:", err.message);
+          }
+        }
       }
 
       const payload = {
         name,
         files: vercelFiles,
         target,
-        projectSettings: {
-          framework: null // Mencegah auto-detect framework yang minta konfirmasi
-        }
+        projectSettings: { framework: null }
       };
       if (projectId) payload.project = projectId;
 
       try {
-        const result = await vercel(
-          "/v13/deployments",
-          env,
-          { method: "POST", body: payload }
-        );
-
-        // OTOMATIS: Matikan proteksi (pakai result.projectId atau name)
+        const result = await vercel("/v13/deployments", env, { method: "POST", body: payload });
         await disableProtection(env, result.projectId || name);
-
         await saveHistory(env, {
-          action: "Deploy Files",
-          title: name,
-          detail: vercelFiles.length + " file · " + target,
-          deploymentId: result.id,
-          status: result.readyState || "QUEUED",
-          url: result.url ? "https://" + result.url : ""
+          action: "Deploy Files", title: name, detail: vercelFiles.length + " file · " + target,
+          deploymentId: result.id, status: result.readyState || "QUEUED", url: result.url ? "https://" + result.url : ""
         });
-        return json({
-          success: true,
-          deployment: deploymentResponse(result, name) // Gunakan URL bersih
-        });
+        return json({ success: true, deployment: deploymentResponse(result, name) });
       } catch (error) {
-        await saveHistory(env, {
-          action: "Deploy Files",
-          title: name,
-          detail: error.message,
-          status: "ERROR"
-        });
+        await saveHistory(env, { action: "Deploy Files", title: name, detail: error.message, status: "ERROR" });
         throw error;
       }
     }
 
-    // ===========================
-    // REDEPLOY LATEST
-    // ===========================
+    // REDEPLOY
     if (path === "/api/redeploy" && method === "POST") {
       const body = await readBody(request);
       const project = await getProject(env, body.projectId);
       const deployments = await getDeployments(env, project.id);
-      deployments.sort(
-        (a, b) => Number(b.createdAt) - Number(a.createdAt)
-      );
+      deployments.sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
       const latest = deployments[0];
-      if (!latest || !latest.id) {
-        throw new HttpError(
-          "Belum ada deployment untuk di-redeploy.",
-          404
-        );
-      }
+      if (!latest || !latest.id) throw new HttpError("Belum ada deployment untuk di-redeploy.", 404);
       try {
-        const result = await vercel(
-          "/v13/deployments?forceNew=1",
-          env,
-          {
-            method: "POST",
-            body: { deploymentId: latest.id, withLatestCommit: true }
-          }
-        );
+        const result = await vercel("/v13/deployments?forceNew=1", env, {
+          method: "POST", body: { deploymentId: latest.id, withLatestCommit: true }
+        });
         await saveHistory(env, {
-          action: "Redeploy",
-          title: project.name,
-          detail: "Mengulang deployment terbaru.",
-          deploymentId: result.id,
-          status: result.readyState || "QUEUED",
-          url: result.url ? "https://" + result.url : ""
+          action: "Redeploy", title: project.name, detail: "Mengulang deployment terbaru.",
+          deploymentId: result.id, status: result.readyState || "QUEUED", url: result.url ? "https://" + result.url : ""
         });
-        return json({
-          success: true,
-          deployment: deploymentResponse(result, project.name)
-        });
+        return json({ success: true, deployment: deploymentResponse(result, project.name) });
       } catch (error) {
-        await saveHistory(env, {
-          action: "Redeploy",
-          title: project.name,
-          detail: error.message,
-          status: "ERROR"
-        });
+        await saveHistory(env, { action: "Redeploy", title: project.name, detail: error.message, status: "ERROR" });
         throw error;
       }
     }
@@ -676,10 +458,7 @@ async function handleAPI(request, env) {
 
   } catch (error) {
     console.error("API error:", error);
-    return json(
-      { error: error.message || "Terjadi kesalahan server." },
-      error.status || 500
-    );
+    return json({ error: error.message || "Terjadi kesalahan server." }, error.status || 500);
   }
 }
 
