@@ -1,242 +1,1122 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b0910">
-<title>IkyStore Vercel Manager</title>
+<meta name="theme-color" content="#08060d">
+<title>Iky Store — Vercel Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0910;--panel:#121019;--panel2:#191521;
-  --line:#30263d;--text:#f7f4fb;--muted:#96909f;
-  --accent:#b94cff;--light:#d79bff;
-  --green:#49c98b;--red:#ee7180;--yellow:#e8bd70;
+  --bg:#08060d;
+  --panel:#120e1b;
+  --panel-2:#171122;
+  --panel-3:#1e1729;
+  --line:#2a2137;
+  --line-soft:#221a2e;
+  --text:#f5f2fa;
+  --text-2:#b9b0c9;
+  --muted:#8b8398;
+  --accent:#a855f7;
+  --accent-2:#7c3aed;
+  --accent-soft:#d8b4fe;
+  --green:#34d399;
+  --red:#fb7185;
+  --yellow:#fbbf24;
+  --shadow:0 24px 50px -30px rgba(0,0,0,.95);
 }
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial, sans-serif;font-size:14px}
+
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#2a2137;border-radius:10px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:#3d2f52}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(900px 620px at 10% -12%, rgba(124,58,237,.20), transparent 62%),
+    radial-gradient(820px 520px at 102% -4%, rgba(168,85,247,.13), transparent 58%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
 button,input,select{font:inherit}
 button{cursor:pointer}
+a{color:inherit}
 .hidden{display:none!important}
-button:disabled{opacity:.5;cursor:not-allowed}
-#loginPage{min-height:100vh;display:grid;place-items:center;padding:20px}
-.login-box{width:100%;max-width:390px;padding:30px;background:var(--panel);border:1px solid var(--line);border-radius:13px}
-.logo{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:#291735;color:var(--light);font-size:21px;font-weight:bold}
-.login-box h1{font-size:22px;margin:20px 0 8px}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+/* ================= LOGIN ================= */
+#loginPage{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:24px;
+}
+
+.login-box{
+  position:relative;
+  width:100%;
+  max-width:404px;
+  padding:34px 30px 30px;
+  background:linear-gradient(180deg,rgba(32,24,44,.94),rgba(16,12,24,.96));
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:0 40px 80px -40px rgba(0,0,0,1), inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter:blur(14px);
+}
+
+.login-box::before{
+  content:"";
+  position:absolute;
+  inset:-1px -1px auto -1px;
+  height:2px;
+  border-radius:20px 20px 0 0;
+  background:linear-gradient(90deg,transparent,rgba(168,85,247,.85),transparent);
+}
+
+.login-brand{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin-bottom:26px;
+}
+
+.login-brand-name{
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:.3px;
+}
+
+.login-brand-sub{
+  font-size:10.5px;
+  color:var(--muted);
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  margin-top:3px;
+}
+
+.logo{
+  width:46px;
+  height:46px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:linear-gradient(140deg,#b06bff,#6d28d9);
+  color:#fff;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.5px;
+  box-shadow:0 10px 24px -10px rgba(168,85,247,.95), inset 0 1px 0 rgba(255,255,255,.3);
+}
+
+.login-box h1{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-.3px;
+  margin:0 0 7px;
+}
+
+.login-box .muted{font-size:12.5px;line-height:1.6;margin:0}
+
 .muted{color:var(--muted)}
-.small{font-size:11px}
-.field{display:flex;flex-direction:column;gap:8px;margin:17px 0}
-label{font-size:12px;color:#c9c0d2}
-input,select{width:100%;min-width:0;background:#0d0b12;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:12px;outline:none}
-input:focus,select:focus{border-color:var(--accent)}
-.btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 13px}
-.btn:hover{border-color:#79528d}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:bold}
-.btn.danger{color:#ff929d}
-.btn.small{padding:7px 10px;font-size:11px}
-.btn.block{width:100%}
+.small{font-size:11.5px}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin:18px 0;
+}
+
+label{
+  font-size:11.5px;
+  font-weight:600;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:#a89cba;
+}
+
+input,select{
+  width:100%;
+  min-width:0;
+  background:#0a0812;
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px 14px;
+  outline:none;
+  font-size:13.5px;
+  transition:border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+input::placeholder{color:#5f5770}
+
+input:focus,select:focus{
+  border-color:var(--accent);
+  background:#0d0a16;
+  box-shadow:0 0 0 3px rgba(168,85,247,.16);
+}
+
+input:disabled{opacity:.6;cursor:not-allowed;color:var(--muted)}
+
+select{
+  appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8398' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat;
+  background-position:right 13px center;
+  padding-right:36px;
+  cursor:pointer;
+}
+
+.form-error{
+  color:var(--red);
+  margin:14px 0 0;
+  min-height:16px;
+  font-weight:500;
+}
+
+/* ================= BUTTONS ================= */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  background:var(--panel-3);
+  border:1px solid var(--line);
+  color:var(--text-2);
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:12.5px;
+  font-weight:600;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease;
+}
+
+.btn:hover{
+  background:#251c34;
+  border-color:#463760;
+  color:var(--text);
+  transform:translateY(-1px);
+}
+
+.btn:active{transform:translateY(0)}
+
+.btn svg{width:14px;height:14px;flex-shrink:0}
+
+.btn.primary{
+  background:linear-gradient(135deg,#a855f7,#7c3aed);
+  border-color:transparent;
+  color:#fff;
+  box-shadow:0 10px 22px -12px rgba(168,85,247,.95);
+}
+
+.btn.primary:hover{
+  filter:brightness(1.09);
+  box-shadow:0 14px 28px -12px rgba(168,85,247,1);
+}
+
+.btn.danger{color:#ff9aa6}
+.btn.danger:hover{background:#331620;border-color:#5d2b3a;color:#ffb3bd}
+
+.btn.small{padding:7px 11px;font-size:11.5px;border-radius:8px}
+.btn.small svg{width:12px;height:12px}
+.btn.block{width:100%;padding:12px 14px;font-size:13.5px}
+
+/* ================= LAYOUT ================= */
 .layout{display:flex;min-height:100vh}
-.sidebar{width:220px;flex-shrink:0;background:#0e0c14;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column}
-.brand{display:flex;align-items:center;gap:11px;padding:0 6px 28px}
-.brand-title{font-size:14px;font-weight:bold;letter-spacing:.5px}
-.brand-sub{font-size:10px;color:var(--muted);margin-top:4px}
-.nav-label{padding:10px;color:#777081;font-size:10px;font-weight:bold;letter-spacing:1px}
-.nav-btn{display:flex;align-items:center;gap:11px;padding:12px 10px;border:0;border-radius:8px;background:transparent;color:var(--muted);text-align:left;width:100%;margin-bottom:4px}
-.nav-btn:hover{background:#1a1520;color:white}
-.nav-btn.active{background:#291a35;color:var(--light);font-weight:bold}
-.nav-icon{width:18px;height:18px;display:grid;place-items:center;border:1px solid currentColor;border-radius:4px;font-size:10px}
-.sidebar-foot{margin-top:auto;border-top:1px solid var(--line);padding:15px 7px 0;color:var(--muted);font-size:10px;line-height:1.8}
-.main{flex:1;min-width:0}
-.topbar{min-height:68px;padding:13px 27px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
-.topbar h2{font-size:16px;margin:0}
-.top-actions{display:flex;align-items:center;gap:13px}
-.connection{font-size:11px;color:var(--green)}
-.content{max-width:1350px;margin:auto;padding:27px}
+
+.sidebar{
+  width:236px;
+  flex-shrink:0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  background:linear-gradient(180deg,rgba(14,11,21,.98),rgba(10,8,16,.98));
+  border-right:1px solid var(--line);
+  padding:24px 14px 20px;
+  display:flex;
+  flex-direction:column;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:0 6px 26px;
+}
+
+.brand .logo{width:38px;height:38px;font-size:17px;border-radius:12px}
+
+.brand-title{font-size:14px;font-weight:800;letter-spacing:.2px}
+.brand-sub{font-size:10px;color:var(--muted);margin-top:3px;letter-spacing:1px;text-transform:uppercase}
+
+.nav-label{
+  padding:10px 10px 8px;
+  color:#6d647c;
+  font-size:9.5px;
+  font-weight:700;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+}
+
+.nav-btn{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:11px 12px;
+  border:1px solid transparent;
+  border-radius:10px;
+  background:transparent;
+  color:var(--muted);
+  text-align:left;
+  width:100%;
+  margin-bottom:4px;
+  font-size:13px;
+  font-weight:600;
+  transition:all .16s ease;
+}
+
+.nav-btn:hover{background:#191324;color:var(--text)}
+
+.nav-btn.active{
+  background:linear-gradient(135deg,rgba(168,85,247,.24),rgba(124,58,237,.10));
+  border-color:rgba(168,85,247,.34);
+  color:#ecd9ff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.nav-icon{
+  width:18px;
+  height:18px;
+  flex-shrink:0;
+  opacity:.9;
+}
+
+.sidebar-foot{
+  margin-top:auto;
+  border-top:1px solid var(--line-soft);
+  padding:16px 8px 0;
+  color:var(--muted);
+  font-size:10.5px;
+  line-height:1.9;
+}
+
+.sidebar-foot strong{color:var(--text-2);font-weight:700;display:block;margin-bottom:2px}
+.sidebar-foot span{color:#6d647c}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:25;
+  min-height:68px;
+  padding:14px 28px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  background:rgba(8,6,13,.78);
+  backdrop-filter:blur(16px);
+}
+
+.topbar h2{
+  font-size:16px;
+  font-weight:700;
+  margin:0;
+  letter-spacing:-.2px;
+}
+
+.top-actions{display:flex;align-items:center;gap:12px}
+
+.connection{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+  border:1px solid rgba(52,211,153,.28);
+  background:rgba(52,211,153,.08);
+  color:#6ee7b7;
+  white-space:nowrap;
+}
+
+.connection::before{
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:currentColor;
+  box-shadow:0 0 0 0 currentColor;
+  animation:pulse 2s infinite;
+}
+
+.connection[data-state="wait"]{
+  border-color:rgba(251,191,36,.28);
+  background:rgba(251,191,36,.08);
+  color:#fcd34d;
+}
+
+.connection[data-state="error"]{
+  border-color:rgba(251,113,133,.3);
+  background:rgba(251,113,133,.09);
+  color:#fda4af;
+}
+
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(52,211,153,.55)}
+  70%{box-shadow:0 0 0 6px rgba(52,211,153,0)}
+  100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}
+}
+
+.content{
+  width:100%;
+  max-width:1350px;
+  margin:0 auto;
+  padding:28px;
+  flex:1;
+}
+
 .view{display:none}
-.view.active{display:block}
-.heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
-.heading h1{font-size:22px;margin:0 0 6px}
-.heading p{font-size:12px;color:var(--muted);margin:0}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:22px}
-.stat{padding:17px;border:1px solid var(--line);background:var(--panel);border-radius:10px}
-.stat-label{font-size:11px;color:var(--muted)}
-.stat-number{font-size:25px;font-weight:bold;margin-top:10px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-.panel-head{padding:16px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
-.panel-head h3{margin:0;font-size:13px}
-.search{max-width:260px}
-.project{padding:17px;border-bottom:1px solid var(--line)}
+.view.active{display:block;animation:fadeUp .28s ease both}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+/* ================= HEADINGS & STATS ================= */
+.heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px;
+}
+
+.heading h1{
+  font-size:23px;
+  font-weight:800;
+  letter-spacing:-.5px;
+  margin:0 0 6px;
+}
+
+.heading p{
+  font-size:12.5px;
+  color:var(--muted);
+  margin:0;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.stat{
+  position:relative;
+  padding:18px;
+  background:linear-gradient(180deg,rgba(30,23,41,.78),rgba(16,12,24,.78));
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+  transition:border-color .2s ease, transform .2s ease;
+}
+
+.stat::after{
+  content:"";
+  position:absolute;
+  inset:0 0 auto 0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(168,85,247,.65),transparent);
+}
+
+.stat:hover{border-color:#3d2f52;transform:translateY(-2px)}
+
+.stat-top{display:flex;align-items:center;gap:9px}
+
+.stat-ico{
+  width:26px;
+  height:26px;
+  display:grid;
+  place-items:center;
+  border-radius:8px;
+  background:rgba(168,85,247,.14);
+  color:#c98cff;
+  flex-shrink:0;
+}
+
+.stat-ico svg{width:14px;height:14px}
+
+.stat-ico.green{background:rgba(52,211,153,.13);color:#4ade80}
+.stat-ico.red{background:rgba(251,113,133,.13);color:#fb7185}
+
+.stat-label{
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.4px;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.stat-number{
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:-.8px;
+  margin-top:12px;
+  line-height:1;
+}
+
+/* ================= PANELS ================= */
+.panel{
+  background:linear-gradient(180deg,rgba(23,17,34,.85),rgba(16,12,24,.9));
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+.panel-head{
+  padding:16px 18px;
+  border-bottom:1px solid var(--line-soft);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  background:rgba(255,255,255,.015);
+}
+
+.panel-head h3{
+  margin:0;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.2px;
+}
+
+.panel-body{padding:20px}
+
+.search-wrap{position:relative;width:100%;max-width:280px}
+.search-wrap svg{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  width:14px;
+  height:14px;
+  color:var(--muted);
+  pointer-events:none;
+}
+
+.search{
+  max-width:none;
+  padding:9px 12px 9px 34px;
+  font-size:12.5px;
+  border-radius:10px;
+  background:#0a0812;
+}
+
+/* ================= PROJECT CARDS ================= */
+.project{
+  padding:18px 20px;
+  border-bottom:1px solid var(--line-soft);
+  transition:background .16s ease;
+}
+
 .project:last-child{border-bottom:0}
-.project-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.project-name{font-weight:bold;font-size:14px;overflow-wrap:anywhere}
-.project-id{font-size:10px;color:var(--muted);margin-top:5px}
-.project-meta{display:flex;flex-wrap:wrap;gap:7px 17px;margin-top:12px;color:var(--muted);font-size:11px}
-.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.tag{padding:5px 8px;border-radius:5px;font-size:10px;background:#282131;color:#d4b8eb;white-space:nowrap}
-.tag.green{background:#142b21;color:#76d5a4}
-.tag.red{background:#341b24;color:#ff9ca7}
-.tag.yellow{background:#302719;color:#e9c17f}
-.empty{text-align:center;padding:35px 15px;color:var(--muted);font-size:12px;line-height:1.8}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-.panel-body{padding:18px}
-.result{margin-top:17px;padding:16px;border:1px solid #493255;background:#1b1422;border-radius:9px;overflow-wrap:anywhere}
-.result-url{display:block;color:var(--light);font-size:12px;margin:12px 0;overflow-wrap:anywhere}
-.history-item{display:flex;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid var(--line)}
+.project:hover{background:rgba(255,255,255,.018)}
+
+.project-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+}
+
+.project-head{display:flex;align-items:center;gap:12px;min-width:0}
+
+.project-avatar{
+  width:38px;
+  height:38px;
+  flex-shrink:0;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  font-size:15px;
+  font-weight:800;
+  color:#e5d1ff;
+  background:linear-gradient(140deg,rgba(168,85,247,.28),rgba(124,58,237,.14));
+  border:1px solid rgba(168,85,247,.28);
+}
+
+.project-name{
+  font-weight:700;
+  font-size:14px;
+  letter-spacing:-.1px;
+  overflow-wrap:anywhere;
+}
+
+.project-id{
+  font-size:10.5px;
+  color:#6d647c;
+  margin-top:4px;
+  font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+  overflow-wrap:anywhere;
+}
+
+.project-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+}
+
+.meta-item{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 10px;
+  border-radius:8px;
+  background:#0c0913;
+  border:1px solid var(--line-soft);
+  font-size:11px;
+  color:var(--muted);
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+
+.meta-item b{color:var(--text-2);font-weight:600;flex-shrink:0}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:14px;
+}
+
+/* ================= TAGS ================= */
+.tag{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.2px;
+  white-space:nowrap;
+  background:rgba(168,85,247,.13);
+  color:#d8b4fe;
+  border:1px solid rgba(168,85,247,.24);
+}
+
+.tag.green{
+  background:rgba(52,211,153,.12);
+  color:#6ee7b7;
+  border-color:rgba(52,211,153,.26);
+}
+
+.tag.red{
+  background:rgba(251,113,133,.12);
+  color:#fda4af;
+  border-color:rgba(251,113,133,.28);
+}
+
+.tag.yellow{
+  background:rgba(251,191,36,.12);
+  color:#fcd34d;
+  border-color:rgba(251,191,36,.26);
+}
+
+/* ================= EMPTY ================= */
+.empty{
+  text-align:center;
+  padding:48px 20px;
+  color:var(--muted);
+  font-size:12.5px;
+  line-height:1.9;
+}
+
+/* ================= DEPLOY FORM ================= */
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+
+.form-grid .field{margin:0}
+
+.result{
+  margin-top:20px;
+  padding:17px;
+  border:1px solid rgba(168,85,247,.3);
+  background:linear-gradient(180deg,rgba(168,85,247,.10),rgba(168,85,247,.03));
+  border-radius:12px;
+  overflow-wrap:anywhere;
+  animation:fadeUp .25s ease both;
+}
+
+.result-url{
+  display:block;
+  color:var(--accent-soft);
+  font-size:12px;
+  margin:12px 0;
+  overflow-wrap:anywhere;
+  font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;
+  text-decoration:none;
+}
+
+.result-url:hover{text-decoration:underline}
+
+/* ================= HISTORY ================= */
+.history-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  padding:16px 20px;
+  border-bottom:1px solid var(--line-soft);
+  transition:background .16s ease;
+}
+
 .history-item:last-child{border-bottom:0}
-.history-title{font-weight:bold;font-size:12px}
-.history-detail{font-size:11px;color:var(--muted);margin-top:6px;overflow-wrap:anywhere}
-.history-time{font-size:10px;color:var(--muted);margin-top:7px}
+.history-item:hover{background:rgba(255,255,255,.018)}
+
+.history-main{min-width:0;flex:1}
+
+.history-title{
+  font-weight:700;
+  font-size:12.5px;
+  overflow-wrap:anywhere;
+}
+
+.history-sep{color:#4d445e;margin:0 2px}
+
+.history-detail{
+  font-size:11.5px;
+  color:var(--muted);
+  margin-top:6px;
+  overflow-wrap:anywhere;
+  line-height:1.6;
+}
+
+.history-detail.mono{font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;font-size:11px}
+
+.history-time{
+  font-size:10.5px;
+  color:#6d647c;
+  margin-top:8px;
+  letter-spacing:.3px;
+}
+
 .history-right{text-align:right;flex-shrink:0}
-.toast{position:fixed;z-index:50;bottom:22px;right:20px;max-width:calc(100% - 40px);padding:13px 16px;background:#211a2b;border:1px solid #543b62;border-radius:9px;box-shadow:0 8px 25px #0008;display:none}
+
+/* ================= TOAST ================= */
+.toast{
+  position:fixed;
+  z-index:120;
+  bottom:26px;
+  right:26px;
+  max-width:calc(100% - 52px);
+  padding:14px 18px;
+  background:linear-gradient(180deg,#251c34,#181122);
+  border:1px solid #4a3a63;
+  border-radius:12px;
+  box-shadow:0 24px 50px -18px rgba(0,0,0,1);
+  font-size:13px;
+  font-weight:500;
+  display:none;
+  animation:toastIn .26s cubic-bezier(.2,.9,.3,1.2);
+}
+
 .toast.show{display:block}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateY(14px) scale(.97)}
+  to{opacity:1;transform:none}
+}
+
+/* ================= MOBILE NAV ================= */
 .mobile-nav{display:none}
-@media(max-width:760px){
- .sidebar{display:none}
- .topbar{padding:13px 15px;min-height:60px}
- .content{padding:19px 14px 90px}
- .stats{gap:8px}
- .stat{padding:12px}
- .stat-number{font-size:21px}
- .stat-label{font-size:10px}
- .heading{align-items:flex-start;flex-direction:column}
- .panel-head{align-items:flex-start;flex-direction:column}
- .search{max-width:none}
- .project-top{flex-direction:column}
- .form-grid{grid-template-columns:1fr}
- .history-item{flex-direction:column}
- .history-right{text-align:left}
- .mobile-nav{display:flex;position:fixed;z-index:30;bottom:0;left:0;right:0;justify-content:space-around;background:#100e16;border-top:1px solid var(--line);padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
- .mobile-nav button{border:0;background:transparent;color:var(--muted);padding:8px 13px;border-radius:7px;font-size:11px}
- .mobile-nav button.active{color:var(--light);background:#291a35}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:900px){
+  .sidebar{display:none}
+
+  .topbar{padding:13px 16px;min-height:62px}
+  .topbar h2{font-size:15px}
+
+  .content{padding:20px 15px 100px}
+
+  .heading{flex-direction:column;align-items:flex-start;gap:12px}
+  .heading h1{font-size:20px}
+
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+  .stat{padding:13px 11px}
+  .stat-ico{width:22px;height:22px;border-radius:7px}
+  .stat-ico svg{width:12px;height:12px}
+  .stat-label{font-size:9px;letter-spacing:.2px}
+  .stat-number{font-size:19px;margin-top:9px}
+
+  .panel-head{flex-direction:column;align-items:flex-start;gap:12px}
+  .search-wrap{max-width:none}
+
+  .project{padding:16px}
+  .project-top{flex-direction:column;gap:12px}
+
+  .form-grid{grid-template-columns:1fr;gap:14px}
+
+  .history-item{flex-direction:column;gap:10px}
+  .history-right{text-align:left}
+
+  .connection{font-size:10px;padding:5px 10px}
+  .top-actions .btn{padding:7px 10px;font-size:11.5px}
+
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    z-index:60;
+    bottom:0;
+    left:0;
+    right:0;
+    justify-content:space-around;
+    background:rgba(13,10,20,.94);
+    backdrop-filter:blur(16px);
+    border-top:1px solid var(--line);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-nav button{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:7px 4px;
+    border-radius:10px;
+    font-size:10.5px;
+    font-weight:600;
+    transition:all .16s ease;
+  }
+
+  .mobile-nav button svg{width:18px;height:18px}
+
+  .mobile-nav button.active{
+    color:var(--accent-soft);
+    background:rgba(168,85,247,.13);
+  }
+
+  .toast{left:16px;right:16px;bottom:90px;max-width:none}
+}
+
+@media(max-width:400px){
+  .stats{grid-template-columns:1fr 1fr}
+  .stat:first-child{grid-column:1 / -1}
 }
 </style>
 </head>
 <body>
 
+<!-- ================= LOGIN ================= -->
 <div id="loginPage">
- <div class="login-box">
-  <div class="logo">E</div>
-  <h1>EKK Vercel Manager</h1>
-  <p class="muted">Panel pengelolaan proyek dan deployment Vercel.</p>
-  <form id="loginForm">
-   <div class="field">
-    <label>Password Admin</label>
-    <input id="password" type="password" placeholder="Masukkan password" autocomplete="current-password" required>
-   </div>
-   <button class="btn primary block" id="loginButton">Masuk Dashboard</button>
-  </form>
-  <p id="loginError" class="small" style="color:var(--red)"></p>
- </div>
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="logo">I</div>
+      <div>
+        <div class="login-brand-name">Iky Store</div>
+        <div class="login-brand-sub">Vercel Manager</div>
+      </div>
+    </div>
+
+    <h1>Masuk ke Dashboard</h1>
+    <p class="muted">Panel pengelolaan proyek dan deployment Vercel.</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="password">Password Admin</label>
+        <input id="password" type="password" placeholder="Masukkan password" autocomplete="current-password" required>
+      </div>
+      <button class="btn primary block" id="loginButton">Masuk Dashboard</button>
+    </form>
+
+    <p id="loginError" class="small form-error"></p>
+  </div>
 </div>
 
+<!-- ================= APP ================= -->
 <div id="appPage" class="hidden">
- <div class="layout">
-  <aside class="sidebar">
-   <div class="brand">
-    <div class="logo">E</div>
-    <div>
-     <div class="brand-title">EKK VERCEL</div>
-     <div class="brand-sub">Management Panel</div>
-    </div>
-   </div>
-   <div class="nav-label">MENU UTAMA</div>
-   <button class="nav-btn active" data-tab="projects"><span class="nav-icon">P</span>Proyek</button>
-   <button class="nav-btn" data-tab="deploy"><span class="nav-icon">D</span>Deploy</button>
-   <button class="nav-btn" data-tab="history"><span class="nav-icon">H</span>Riwayat</button>
-   <div class="sidebar-foot">EKK Vercel Manager<br>Connected through Cloudflare Workers</div>
-  </aside>
+  <div class="layout">
 
-  <main class="main">
-   <header class="topbar">
-    <h2 id="topTitle">Proyek</h2>
-    <div class="top-actions">
-     <span class="connection" id="connection">● Menghubungkan</span>
-     <button class="btn small" id="logoutButton">Keluar</button>
-    </div>
-   </header>
-
-   <div class="content">
-
-    <section id="tab-projects" class="view active">
-     <div class="heading">
-      <div>
-       <h1>Daftar Proyek</h1>
-       <p>Kelola semua proyek dari akun Vercel.</p>
-      </div>
-      <button class="btn primary" data-tab="deploy">+ Deploy Baru</button>
-     </div>
-     <div class="stats">
-      <div class="stat"><div class="stat-label">Total Proyek</div><div class="stat-number" id="totalProjects">0</div></div>
-      <div class="stat"><div class="stat-label">Deployment Berhasil</div><div class="stat-number" id="successful">0</div></div>
-      <div class="stat"><div class="stat-label">Deployment Gagal</div><div class="stat-number" id="failed">0</div></div>
-     </div>
-     <div class="panel">
-      <div class="panel-head">
-       <h3>Semua Proyek</h3>
-       <input class="search" id="searchProject" placeholder="Cari proyek...">
-      </div>
-      <div id="projectList"><div class="empty">Memuat proyek...</div></div>
-     </div>
-    </section>
-
-    <section id="tab-deploy" class="view">
-     <div class="heading">
-      <div><h1>Deploy Project</h1><p>Deploy dari repository GitHub yang telah terhubung ke Vercel.</p></div>
-     </div>
-     <div class="panel">
-      <div class="panel-head"><h3>Konfigurasi Deployment</h3></div>
-      <div class="panel-body">
-       <form id="deployForm">
-        <div class="form-grid">
-         <div class="field">
-          <label>Proyek Vercel</label>
-          <select id="deployProject" required><option value="">Pilih proyek</option></select>
-         </div>
-         <div class="field">
-          <label>Branch GitHub</label>
-          <input id="deployBranch" value="main" placeholder="main" required>
-         </div>
-         <div class="field">
-          <label>Target</label>
-          <select id="deployTarget">
-           <option value="production">Production</option>
-           <option value="preview">Preview</option>
-          </select>
-         </div>
-         <div class="field">
-          <label>Sumber deployment</label>
-          <input value="GitHub Integration Vercel" disabled>
-         </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">I</div>
+        <div>
+          <div class="brand-title">Iky Store</div>
+          <div class="brand-sub">Vercel Manager</div>
         </div>
-        <button class="btn primary" id="deployButton" type="submit">Mulai Deployment</button>
-       </form>
-       <div id="deployResult"></div>
       </div>
-     </div>
-    </section>
 
-    <section id="tab-history" class="view">
-     <div class="heading">
-      <div><h1>Riwayat Aktivitas</h1><p>Riwayat deployment dan perubahan proyek.</p></div>
-      <button class="btn" id="refreshHistory">Refresh</button>
-     </div>
-     <div class="panel">
-      <div class="panel-head">
-       <h3>History Center</h3>
-       <span class="muted small" id="historyCount">0 aktivitas</span>
+      <div class="nav-label">Menu Utama</div>
+
+      <button class="nav-btn active" data-tab="projects">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="2"/>
+          <rect x="14" y="3" width="7" height="7" rx="2"/>
+          <rect x="3" y="14" width="7" height="7" rx="2"/>
+          <rect x="14" y="14" width="7" height="7" rx="2"/>
+        </svg>
+        <span>Proyek</span>
+      </button>
+
+      <button class="nav-btn" data-tab="deploy">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4"/>
+          <path d="m7 9 5-5 5 5"/>
+          <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+        </svg>
+        <span>Deploy</span>
+      </button>
+
+      <button class="nav-btn" data-tab="history">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 3-6.7"/>
+          <path d="M3 4v5h5"/>
+          <path d="M12 8v4l3 2"/>
+        </svg>
+        <span>Riwayat</span>
+      </button>
+
+      <div class="sidebar-foot">
+        <strong>Iky Store</strong>
+        Vercel Manager v1.0<br>
+        <span>Cloudflare Workers</span>
       </div>
-      <div id="historyList"><div class="empty">Memuat riwayat...</div></div>
-     </div>
-    </section>
-   </div>
-  </main>
- </div>
+    </aside>
 
- <nav class="mobile-nav">
-  <button class="active" data-tab="projects">Proyek</button>
-  <button data-tab="deploy">Deploy</button>
-  <button data-tab="history">Riwayat</button>
- </nav>
+    <!-- MAIN -->
+    <main class="main">
+      <header class="topbar">
+        <h2 id="topTitle">Proyek</h2>
+        <div class="top-actions">
+          <span class="connection" id="connection" data-state="wait">Menghubungkan</span>
+          <button class="btn small" id="logoutButton">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <path d="m16 17 5-5-5-5"/>
+              <path d="M21 12H9"/>
+            </svg>
+            Keluar
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- PROJECTS -->
+        <section id="tab-projects" class="view active">
+          <div class="heading">
+            <div>
+              <h1>Daftar Proyek</h1>
+              <p>Kelola semua proyek dari akun Vercel.</p>
+            </div>
+            <button class="btn primary" data-tab="deploy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Deploy Baru
+            </button>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-top">
+                <span class="stat-ico">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="2"/>
+                    <rect x="14" y="3" width="7" height="7" rx="2"/>
+                    <rect x="3" y="14" width="7" height="7" rx="2"/>
+                    <rect x="14" y="14" width="7" height="7" rx="2"/>
+                  </svg>
+                </span>
+                <span class="stat-label">Total Proyek</span>
+              </div>
+              <div class="stat-number" id="totalProjects">0</div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-top">
+                <span class="stat-ico green">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
+                </span>
+                <span class="stat-label">Deploy Berhasil</span>
+              </div>
+              <div class="stat-number" id="successful">0</div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-top">
+                <span class="stat-ico red">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6 6 18M6 6l12 12"/>
+                  </svg>
+                </span>
+                <span class="stat-label">Deploy Gagal</span>
+              </div>
+              <div class="stat-number" id="failed">0</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Semua Proyek</h3>
+              <div class="search-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="7"/>
+                  <path d="m20 20-3.2-3.2"/>
+                </svg>
+                <input class="search" id="searchProject" placeholder="Cari proyek...">
+              </div>
+            </div>
+            <div id="projectList"><div class="empty">Memuat proyek...</div></div>
+          </div>
+        </section>
+
+        <!-- DEPLOY -->
+        <section id="tab-deploy" class="view">
+          <div class="heading">
+            <div>
+              <h1>Deploy Project</h1>
+              <p>Deploy dari repository GitHub yang telah terhubung ke Vercel.</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head"><h3>Konfigurasi Deployment</h3></div>
+            <div class="panel-body">
+              <form id="deployForm">
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="deployProject">Proyek Vercel</label>
+                    <select id="deployProject" required><option value="">Pilih proyek</option></select>
+                  </div>
+                  <div class="field">
+                    <label for="deployBranch">Branch GitHub</label>
+                    <input id="deployBranch" value="main" placeholder="main" required>
+                  </div>
+                  <div class="field">
+                    <label for="deployTarget">Target</label>
+                    <select id="deployTarget">
+                      <option value="production">Production</option>
+                      <option value="preview">Preview</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="deploySource">Sumber deployment</label>
+                    <input id="deploySource" value="GitHub Integration Vercel" disabled>
+                  </div>
+                </div>
+
+                <div style="margin-top:20px">
+                  <button class="btn primary" id="deployButton" type="submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 16V4"/>
+                      <path d="m7 9 5-5 5 5"/>
+                      <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                    </svg>
+                    Mulai Deployment
+                  </button>
+                </div>
+              </form>
+
+              <div id="deployResult"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- HISTORY -->
+        <section id="tab-history" class="view">
+          <div class="heading">
+            <div>
+              <h1>Riwayat Aktivitas</h1>
+              <p>Riwayat deployment dan perubahan proyek.</p>
+            </div>
+            <button class="btn" id="refreshHistory">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-3-6.7"/>
+                <path d="M21 4v5h-5"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h3>History Center</h3>
+              <span class="muted small" id="historyCount">0 aktivitas</span>
+            </div>
+            <div id="historyList"><div class="empty">Memuat riwayat...</div></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav">
+    <button class="active" data-tab="projects">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="2"/>
+        <rect x="14" y="3" width="7" height="7" rx="2"/>
+        <rect x="3" y="14" width="7" height="7" rx="2"/>
+        <rect x="14" y="14" width="7" height="7" rx="2"/>
+      </svg>
+      <span>Proyek</span>
+    </button>
+
+    <button data-tab="deploy">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 16V4"/>
+        <path d="m7 9 5-5 5 5"/>
+        <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+      </svg>
+      <span>Deploy</span>
+    </button>
+
+    <button data-tab="history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 3-6.7"/>
+        <path d="M3 4v5h5"/>
+        <path d="M12 8v4l3 2"/>
+      </svg>
+      <span>Riwayat</span>
+    </button>
+  </nav>
 </div>
 
 <div id="toast" class="toast"></div>
@@ -297,6 +1177,12 @@ function showApp(){
  $("appPage").classList.remove("hidden");
 }
 
+function setConnection(text,state){
+ const el=$("connection");
+ el.textContent=text;
+ el.dataset.state=state;
+}
+
 function changeTab(tab){
  document.querySelectorAll(".view").forEach(el=>{
   el.classList.toggle("active",el.id==="tab-"+tab);
@@ -339,18 +1225,21 @@ function renderProjects(){
  $("projectList").innerHTML=filtered.map(p=>`
   <article class="project">
    <div class="project-top">
-    <div>
-     <div class="project-name">${escapeHTML(p.name)}</div>
-     <div class="project-id">${escapeHTML(p.id)}</div>
+    <div class="project-head">
+     <div class="project-avatar">${escapeHTML((p.name||"?").trim().charAt(0).toUpperCase())}</div>
+     <div>
+      <div class="project-name">${escapeHTML(p.name)}</div>
+      <div class="project-id">${escapeHTML(p.id)}</div>
+     </div>
     </div>
     <span class="tag ${p.canDeploy?"green":"yellow"}">
      ${p.canDeploy?"GitHub Connected":"GitHub belum terhubung"}
     </span>
    </div>
    <div class="project-meta">
-    <span>Repository: ${escapeHTML(p.repository||"-")}</span>
-    <span>Branch utama: ${escapeHTML(p.branch||"main")}</span>
-    <span>Framework: ${escapeHTML(p.framework||"-")}</span>
+    <span class="meta-item"><b>Repo</b> ${escapeHTML(p.repository||"-")}</span>
+    <span class="meta-item"><b>Branch</b> ${escapeHTML(p.branch||"main")}</span>
+    <span class="meta-item"><b>Framework</b> ${escapeHTML(p.framework||"-")}</span>
    </div>
    <div class="actions">
     <button class="btn small primary" data-action="deploy" data-id="${escapeHTML(p.id)}" ${p.canDeploy?"":"disabled"}>Deploy</button>
@@ -389,11 +1278,11 @@ function renderHistory(){
 
  $("historyList").innerHTML=historyItems.map(item=>`
   <div class="history-item">
-   <div>
-    <div class="history-title">${escapeHTML(item.action)} · ${escapeHTML(item.title)}</div>
+   <div class="history-main">
+    <div class="history-title">${escapeHTML(item.action)}<span class="history-sep">·</span>${escapeHTML(item.title)}</div>
     <div class="history-detail">${escapeHTML(item.detail||"-")}</div>
     <div class="history-time">${dateText(item.at)}</div>
-    ${item.url?`<div class="history-detail">${escapeHTML(item.url)}</div>`:""}
+    ${item.url?`<div class="history-detail mono">${escapeHTML(item.url)}</div>`:""}
     ${item.url?`
      <div class="actions">
       <button class="btn small" data-history-copy="${escapeHTML(item.url)}">Salin URL</button>
@@ -433,12 +1322,12 @@ async function loadHistory(){
 }
 
 async function refreshAll(){
- $("connection").textContent="● Menghubungkan...";
+ setConnection("Menghubungkan...","wait");
  try{
   await Promise.all([loadProjects(),loadHistory()]);
-  $("connection").textContent="● Vercel Connected";
+  setConnection("Vercel Connected","ok");
  }catch(error){
-  $("connection").textContent="● Koneksi bermasalah";
+  setConnection("Koneksi bermasalah","error");
   notify(error.message);
  }
 }
@@ -635,10 +1524,10 @@ $("deployForm").addEventListener("submit",async event=>{
   result.innerHTML=`
    <div class="result">
     <b>Permintaan deployment berhasil dikirim.</b>
-    <p class="muted small">Status: ${escapeHTML(deployment.state||"QUEUED")}</p>
-    ${url?`<a class="result-url" href="${escapeHTML(url)}" target="_blank" rel="noopener">${escapeHTML(url)}</a>`:'<p class="muted small">URL sedang diproses. Periksa riwayat deployment beberapa saat lagi.</p>'}
-    ${url?`<div class="actions"><button class="btn small" id="copyDeployment">Salin URL</button><a class="btn small primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">Buka Website</a></div>`:""}
-    ${deployment.inspectorUrl?`<p><a class="result-url" target="_blank" rel="noopener" href="${escapeHTML(deployment.inspectorUrl)}">Detail Deployment</a></p>`:""}
+    <p class="muted small" style="margin:8px 0 0">Status: ${escapeHTML(deployment.state||"QUEUED")}</p>
+    ${url?`<a class="result-url" href="${escapeHTML(url)}" target="_blank" rel="noopener">${escapeHTML(url)}</a>`:'<p class="muted small" style="margin-top:12px">URL sedang diproses. Periksa riwayat deployment beberapa saat lagi.</p>'}
+    ${url?`<div class="actions" style="margin-top:0"><button class="btn small" id="copyDeployment">Salin URL</button><a class="btn small primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">Buka Website</a></div>`:""}
+    ${deployment.inspectorUrl?`<p style="margin:12px 0 0"><a class="result-url" style="margin:0" target="_blank" rel="noopener" href="${escapeHTML(deployment.inspectorUrl)}">Detail Deployment</a></p>`:""}
    </div>`;
 
   if(url) $("copyDeployment").addEventListener("click",()=>copyText(url));
@@ -648,7 +1537,7 @@ $("deployForm").addEventListener("submit",async event=>{
   result.innerHTML=`
    <div class="result">
     <b style="color:var(--red)">Deployment gagal</b>
-    <p class="small">${escapeHTML(error.message)}</p>
+    <p class="small" style="margin:8px 0 0">${escapeHTML(error.message)}</p>
    </div>`;
   notify(error.message);
   await loadHistory();
