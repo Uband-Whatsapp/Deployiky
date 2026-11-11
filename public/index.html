@@ -1,0 +1,847 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0910">
+<title>EKK Vercel Manager</title>
+<style>
+:root {
+  --bg:#0b0910;
+  --panel:#121019;
+  --panel2:#181521;
+  --line:#292333;
+  --text:#f7f4fb;
+  --muted:#9992a5;
+  --accent:#b94cff;
+  --accent2:#d79bff;
+  --green:#42c98a;
+  --red:#f16c7b;
+  --yellow:#e8b765;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,Arial,sans-serif;font-size:14px;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+#loginView{
+  min-height:100vh;display:flex;align-items:center;
+  justify-content:center;padding:20px;
+}
+.login-card{
+  width:100%;max-width:390px;background:var(--panel);
+  border:1px solid var(--line);padding:32px;border-radius:16px;
+}
+.logo{
+  width:42px;height:42px;border-radius:11px;
+  display:grid;place-items:center;
+  background:#261334;color:var(--accent2);
+  font-size:19px;font-weight:800;
+}
+.login-card h1{font-size:22px;margin:20px 0 7px}
+.login-card p{color:var(--muted);line-height:1.6}
+.field{display:flex;flex-direction:column;gap:8px;margin:17px 0}
+.field label{font-size:12px;color:#c5bdcf}
+input,select{
+  width:100%;background:#0e0c14;border:1px solid var(--line);
+  color:var(--text);padding:12px 13px;border-radius:9px;
+  outline:none;min-width:0;
+}
+input:focus,select:focus{border-color:var(--accent)}
+.btn{
+  border:1px solid var(--line);background:var(--panel2);
+  color:var(--text);padding:10px 13px;border-radius:8px;
+  transition:.15s;
+}
+.btn:hover{border-color:#74508d}
+.btn.primary{
+  background:var(--accent);border-color:var(--accent);
+  color:#fff;font-weight:700;
+}
+.btn.primary:hover{background:#a83ce9}
+.btn.danger{color:#ff929d}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.block{width:100%}
+.btn.small{font-size:12px;padding:7px 10px}
+#appView{min-height:100vh}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:225px;flex-shrink:0;background:#0e0c14;
+  border-right:1px solid var(--line);
+  padding:22px 15px;display:flex;flex-direction:column;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:0 7px 25px}
+.brand-name{font-weight:800;font-size:15px;letter-spacing:.4px}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.nav-label{
+  color:#777081;font-size:10px;font-weight:700;
+  letter-spacing:1px;padding:10px 10px;
+}
+.nav-btn{
+  width:100%;display:flex;align-items:center;gap:12px;
+  border:0;background:transparent;color:var(--muted);
+  padding:12px 11px;text-align:left;border-radius:8px;
+  margin-bottom:4px;
+}
+.nav-btn:hover{background:#191521;color:var(--text)}
+.nav-btn.active{
+  background:#251632;color:var(--accent2);
+  font-weight:700;
+}
+.nav-mark{
+  width:19px;height:19px;border:1px solid currentColor;
+  border-radius:5px;display:grid;place-items:center;
+  font-size:10px;
+}
+.sidebar-bottom{
+  margin-top:auto;border-top:1px solid var(--line);
+  padding:16px 8px 0;color:var(--muted);
+  font-size:11px;line-height:1.7;
+}
+.main{flex:1;min-width:0}
+.topbar{
+  min-height:72px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;gap:15px;
+}
+.topbar h2{font-size:17px;margin:0}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.connection{font-size:11px;color:var(--green)}
+.avatar{
+  width:33px;height:33px;border-radius:50%;
+  background:#2a1937;color:var(--accent2);
+  display:grid;place-items:center;font-weight:700;
+}
+.content{padding:26px 28px;max-width:1350px;margin:auto}
+.page-heading{
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;margin-bottom:21px;
+}
+.page-heading h1{font-size:22px;margin:0 0 6px}
+.page-heading p{color:var(--muted);margin:0;font-size:12px}
+.stats{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;margin-bottom:23px;
+}
+.stat{
+  border:1px solid var(--line);background:var(--panel);
+  padding:18px;border-radius:11px;
+}
+.stat-label{color:var(--muted);font-size:12px}
+.stat-value{font-size:25px;font-weight:750;margin-top:10px}
+.stat-note{font-size:11px;color:var(--muted);margin-top:6px}
+.panel{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:11px;overflow:hidden;
+}
+.panel-head{
+  padding:17px 18px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+.panel-head h3{font-size:14px;margin:0}
+.panel-body{padding:18px}
+.search{max-width:270px}
+.project-list{display:flex;flex-direction:column}
+.project{
+  padding:17px 18px;border-bottom:1px solid var(--line);
+}
+.project:last-child{border-bottom:0}
+.project-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;gap:13px;
+}
+.project-name{font-size:14px;font-weight:700;word-break:break-word}
+.project-id{font-size:10px;color:var(--muted);margin-top:5px}
+.project-meta{
+  display:flex;flex-wrap:wrap;gap:7px 15px;
+  margin-top:11px;color:var(--muted);font-size:11px;
+}
+.project-actions{
+  display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;
+}
+.tag{
+  font-size:10px;padding:5px 8px;border-radius:5px;
+  background:#201a2a;color:#cbb5df;
+}
+.tag.green{background:#123023;color:#79dbae}
+.tag.red{background:#351b23;color:#ff9daa}
+.tag.yellow{background:#302717;color:#e8c17b}
+.empty{
+  padding:35px 15px;text-align:center;color:var(--muted);
+  line-height:1.8;
+}
+.tabs{display:none}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.form-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:15px;
+}
+.result{
+  margin-top:16px;border:1px solid #473054;
+  background:#1a1222;padding:16px;border-radius:9px;
+}
+.result-title{font-weight:700;margin-bottom:8px}
+.result-url{
+  display:block;color:var(--accent2);word-break:break-all;
+  margin:12px 0;font-size:12px;
+}
+.history-item{
+  display:flex;justify-content:space-between;
+  gap:15px;padding:15px 18px;border-bottom:1px solid var(--line);
+}
+.history-item:last-child{border-bottom:0}
+.history-title{font-weight:650}
+.history-detail{font-size:11px;color:var(--muted);margin-top:5px}
+.history-time{font-size:10px;color:var(--muted);margin-top:7px}
+.history-right{text-align:right;flex-shrink:0}
+.toast{
+  position:fixed;bottom:22px;right:22px;z-index:20;
+  background:#211b2b;border:1px solid #493655;
+  color:var(--text);padding:13px 17px;border-radius:9px;
+  max-width:calc(100% - 40px);display:none;
+  box-shadow:0 10px 30px #0008;
+}
+.toast.show{display:block}
+.loading{opacity:.6;pointer-events:none}
+@media(max-width:760px){
+  .sidebar{display:none}
+  .topbar{padding:14px 17px;min-height:64px}
+  .content{padding:20px 15px 92px}
+  .stats{gap:9px}
+  .stat{padding:13px}
+  .stat-value{font-size:21px}
+  .stat-label{font-size:10px}
+  .page-heading{align-items:flex-start;flex-direction:column}
+  .panel-head{align-items:flex-start;flex-direction:column}
+  .search{max-width:none}
+  .project-top{flex-direction:column}
+  .form-grid{grid-template-columns:1fr}
+  .history-item{padding:14px;flex-direction:column}
+  .history-right{text-align:left}
+  .mobile-nav{
+    display:flex!important;position:fixed;bottom:0;left:0;right:0;
+    z-index:10;background:#100e16;border-top:1px solid var(--line);
+    padding:8px 5px calc(8px + env(safe-area-inset-bottom));
+    justify-content:space-around;
+  }
+  .mobile-nav button{
+    border:0;background:transparent;color:var(--muted);
+    font-size:11px;padding:7px 9px;border-radius:7px;
+  }
+  .mobile-nav button.active{color:var(--accent2);background:#251632}
+}
+.mobile-nav{display:none}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginView">
+  <div class="login-card">
+    <div class="logo">E</div>
+    <h1>EKK Vercel Manager</h1>
+    <p>Panel pengelolaan proyek dan deployment Vercel.</p>
+    <form id="loginForm">
+      <div class="field">
+        <label>Password Admin</label>
+        <input id="password" type="password" placeholder="Masukkan password" required autocomplete="current-password">
+      </div>
+      <button class="btn primary block" id="loginButton">Masuk Dashboard</button>
+    </form>
+    <p id="loginError" class="small" style="color:var(--red)"></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appView" class="hidden">
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">E</div>
+      <div>
+        <div class="brand-name">EKK VERCEL</div>
+        <div class="brand-sub">Management Panel</div>
+      </div>
+    </div>
+
+    <div class="nav-label">MENU UTAMA</div>
+    <button class="nav-btn active" data-tab="projects">
+      <span class="nav-mark">P</span> Proyek
+    </button>
+    <button class="nav-btn" data-tab="deploy">
+      <span class="nav-mark">D</span> Deploy
+    </button>
+    <button class="nav-btn" data-tab="history">
+      <span class="nav-mark">H</span> Riwayat
+    </button>
+
+    <div class="sidebar-bottom">
+      <div>EKK Vercel Manager</div>
+      <div>Connected through Cloudflare Workers</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <h2 id="topTitle">Proyek</h2>
+      <div class="topbar-right">
+        <span class="connection" id="connectionStatus">● Terhubung</span>
+        <div class="avatar">E</div>
+        <button class="btn small" id="logoutButton">Keluar</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- PROJECTS -->
+      <section id="tab-projects" class="tab-panel active">
+        <div class="page-heading">
+          <div>
+            <h1>Daftar Proyek</h1>
+            <p>Kelola seluruh proyek Vercel dalam satu tempat.</p>
+          </div>
+          <button class="btn primary" data-tab="deploy">+ Deploy Baru</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Total Proyek</div>
+            <div class="stat-value" id="totalProjects">0</div>
+            <div class="stat-note">Proyek pada akun Vercel</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Deployment Berhasil</div>
+            <div class="stat-value" id="successCount">0</div>
+            <div class="stat-note">Berdasarkan riwayat manager</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Deployment Gagal</div>
+            <div class="stat-value" id="failedCount">0</div>
+            <div class="stat-note">Berdasarkan riwayat manager</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Semua Proyek</h3>
+            <input class="search" id="searchProject" placeholder="Cari nama proyek...">
+          </div>
+          <div id="projectList" class="project-list">
+            <div class="empty">Memuat proyek...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DEPLOY -->
+      <section id="tab-deploy" class="tab-panel">
+        <div class="page-heading">
+          <div>
+            <h1>Deploy Project</h1>
+            <p>Jalankan deployment dari repository GitHub yang terhubung.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Konfigurasi Deployment</h3>
+          </div>
+          <div class="panel-body">
+            <form id="deployForm">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Proyek Vercel</label>
+                  <select id="deployProject" required>
+                    <option value="">Pilih proyek</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Branch GitHub</label>
+                  <input id="deployBranch" value="main" placeholder="main" required>
+                </div>
+                <div class="field">
+                  <label>Target Deployment</label>
+                  <select id="deployTarget">
+                    <option value="production">Production</option>
+                    <option value="preview">Preview</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Sumber</label>
+                  <input value="GitHub Integration Vercel" disabled>
+                </div>
+              </div>
+              <button class="btn primary" id="deployButton" type="submit">Mulai Deployment</button>
+            </form>
+            <div id="deployResult"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY -->
+      <section id="tab-history" class="tab-panel">
+        <div class="page-heading">
+          <div>
+            <h1>Riwayat Aktivitas</h1>
+            <p>Catatan deployment dan pengelolaan proyek.</p>
+          </div>
+          <button class="btn" id="refreshHistory">Refresh</button>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>History Center</h3>
+            <span class="small muted" id="historyTotal">0 aktivitas</span>
+          </div>
+          <div id="historyList">
+            <div class="empty">Belum ada aktivitas.</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<nav class="mobile-nav">
+  <button class="active" data-tab="projects">Proyek</button>
+  <button data-tab="deploy">Deploy</button>
+  <button data-tab="history">Riwayat</button>
+</nav>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let projects = [];
+let historyItems = [];
+
+const titles = {
+  projects:"Proyek",
+  deploy:"Deployment",
+  history:"Riwayat Aktivitas"
+};
+
+function esc(value){
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[char]));
+}
+
+function toast(message){
+  const el=$("toast");
+  el.textContent=message;
+  el.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>el.classList.remove("show"),3200);
+}
+
+async function api(path, options={}){
+  const headers={...(options.headers||{})};
+  if(options.body) headers["Content-Type"]="application/json";
+
+  const response=await fetch(path,{
+    ...options,
+    headers,
+    credentials:"same-origin"
+  });
+
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok){
+    if(response.status===401 && path!=="/api/login"){
+      showLogin();
+    }
+    throw new Error(data.error || "Terjadi kesalahan pada server.");
+  }
+  return data;
+}
+
+function showLogin(){
+  $("appView").classList.add("hidden");
+  $("loginView").classList.remove("hidden");
+}
+
+function showApp(){
+  $("loginView").classList.add("hidden");
+  $("appView").classList.remove("hidden");
+}
+
+function switchTab(tab){
+  document.querySelectorAll(".tab-panel").forEach(el=>{
+    el.classList.toggle("active",el.id==="tab-"+tab);
+  });
+
+  document.querySelectorAll("[data-tab]").forEach(el=>{
+    el.classList.toggle("active",el.dataset.tab===tab);
+  });
+
+  $("topTitle").textContent=titles[tab]||"Dashboard";
+  if(tab==="history") loadHistory();
+  if(tab==="deploy") renderProjectSelect();
+}
+
+function formatDate(value){
+  if(!value) return "-";
+  const date=new Date(Number(value));
+  if(Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleString("id-ID");
+}
+
+function statusClass(status){
+  const s=String(status||"").toUpperCase();
+  if(["READY","SUCCESS","OK"].includes(s)) return "green";
+  if(["ERROR","FAILED","CANCELED"].includes(s)) return "red";
+  return "yellow";
+}
+
+function renderProjects(){
+  const search=$("searchProject").value.toLowerCase().trim();
+  const filtered=projects.filter(p=>
+    p.name.toLowerCase().includes(search) ||
+    (p.repository||"").toLowerCase().includes(search)
+  );
+
+  $("totalProjects").textContent=projects.length;
+
+  if(!filtered.length){
+    $("projectList").innerHTML=
+      '<div class="empty">Tidak ada proyek yang ditemukan.</div>';
+    return;
+  }
+
+  $("projectList").innerHTML=filtered.map(p=>`
+    <article class="project">
+      <div class="project-top">
+        <div>
+          <div class="project-name">${esc(p.name)}</div>
+          <div class="project-id">${esc(p.id)}</div>
+        </div>
+        <span class="tag ${p.canDeploy?"green":"yellow"}">
+          ${p.canDeploy?"GitHub Connected":"GitHub belum terhubung"}
+        </span>
+      </div>
+
+      <div class="project-meta">
+        <span>Repository: ${esc(p.repository||"Tidak tersedia")}</span>
+        <span>Branch utama: ${esc(p.branch||"main")}</span>
+        <span>Framework: ${esc(p.framework||"Tidak diketahui")}</span>
+      </div>
+
+      <div class="project-actions">
+        <button class="btn small primary" data-action="deploy" data-id="${esc(p.id)}">Deploy</button>
+        <button class="btn small" data-action="copy" data-id="${esc(p.id)}">Salin URL</button>
+        <button class="btn small" data-action="open" data-id="${esc(p.id)}">Buka Website</button>
+        <button class="btn small" data-action="rename" data-id="${esc(p.id)}">Rename</button>
+        <button class="btn small danger" data-action="delete" data-id="${esc(p.id)}">Hapus</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function renderProjectSelect(){
+  const select=$("deployProject");
+  const previous=select.value;
+
+  select.innerHTML='<option value="">Pilih proyek</option>'+
+    projects.map(p=>`
+      <option value="${esc(p.id)}">${esc(p.name)}</option>
+    `).join("");
+
+  if(projects.some(p=>p.id===previous)) select.value=previous;
+
+  updateBranchDefault();
+}
+
+function updateBranchDefault(){
+  const project=projects.find(p=>p.id===$("deployProject").value);
+  if(project) $("deployBranch").value=project.branch||"main";
+}
+
+function renderHistory(){
+  $("historyTotal").textContent=historyItems.length+" aktivitas";
+
+  if(!historyItems.length){
+    $("historyList").innerHTML=
+      '<div class="empty">Belum ada aktivitas.</div>';
+    return;
+  }
+
+  $("historyList").innerHTML=historyItems.map(item=>`
+    <div class="history-item">
+      <div>
+        <div class="history-title">${esc(item.action)} · ${esc(item.title)}</div>
+        <div class="history-detail">${esc(item.detail||"-")}</div>
+        <div class="history-time">${formatDate(item.at)}</div>
+        ${item.url?`<div class="history-detail">${esc(item.url)}</div>`:""}
+      </div>
+      <div class="history-right">
+        <span class="tag ${statusClass(item.status)}">${esc(item.status||"OK")}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function updateStats(){
+  const success=historyItems.filter(x=>
+    ["READY","SUCCESS","OK"].includes(String(x.status).toUpperCase())
+  ).length;
+  const failed=historyItems.filter(x=>
+    ["ERROR","FAILED","CANCELED"].includes(String(x.status).toUpperCase())
+  ).length;
+
+  $("successCount").textContent=success;
+  $("failedCount").textContent=failed;
+}
+
+async function loadProjects(){
+  const data=await api("/api/projects");
+  projects=data.projects||[];
+  renderProjects();
+  renderProjectSelect();
+}
+
+async function loadHistory(){
+  const data=await api("/api/history");
+  historyItems=data.history||[];
+  renderHistory();
+  updateStats();
+}
+
+async function loadApp(){
+  showApp();
+  $("connectionStatus").textContent="● Menghubungkan...";
+  try{
+    await Promise.all([loadProjects(),loadHistory()]);
+    $("connectionStatus").textContent="● Vercel Connected";
+  }catch(error){
+    $("connectionStatus").textContent="● Koneksi bermasalah";
+    toast(error.message);
+  }
+}
+
+async function findProjectUrl(projectId){
+  const data=await api("/api/deployments?projectId="+encodeURIComponent(projectId));
+  const list=data.deployments||[];
+
+  const ready=list.find(d=>
+    d.state==="READY" && String(d.target).toLowerCase()==="production"
+  ) || list.find(d=>d.state==="READY") || list.find(d=>d.url);
+
+  if(!ready || !ready.url) throw new Error("URL deployment belum tersedia.");
+  return ready.url.startsWith("http")?ready.url:"https://"+ready.url;
+}
+
+async function handleProjectUrl(id,mode){
+  let newWindow=null;
+
+  if(mode==="open"){
+    newWindow=window.open("about:blank","_blank");
+  }
+
+  try{
+    const url=await findProjectUrl(id);
+
+    if(mode==="copy"){
+      await navigator.clipboard.writeText(url);
+      toast("URL berhasil disalin.");
+    }else if(newWindow){
+      newWindow.location=url;
+    }else{
+      window.location.href=url;
+    }
+  }catch(error){
+    if(newWindow) newWindow.close();
+    toast(error.message);
+  }
+}
+
+$("loginForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const button=$("loginButton");
+  button.disabled=true;
+  button.textContent="Memeriksa...";
+
+  try{
+    await api("/api/login",{
+      method:"POST",
+      body:JSON.stringify({password:$("password").value})
+    });
+
+    $("password").value="";
+    $("loginError").textContent="";
+    await loadApp();
+  }catch(error){
+    $("loginError").textContent=error.message;
+  }finally{
+    button.disabled=false;
+    button.textContent="Masuk Dashboard";
+  }
+});
+
+$("logoutButton").addEventListener("click",async()=>{
+  try{await api("/api/logout",{method:"POST"});}catch(e){}
+  showLogin();
+});
+
+document.addEventListener("click",async event=>{
+  const tab=event.target.closest("[data-tab]");
+  if(tab){
+    switchTab(tab.dataset.tab);
+    return;
+  }
+
+  const button=event.target.closest("[data-action]");
+  if(!button) return;
+
+  const id=button.dataset.id;
+  const action=button.dataset.action;
+  const project=projects.find(p=>p.id===id);
+  if(!project) return;
+
+  try{
+    if(action==="deploy"){
+      $("deployProject").value=id;
+      updateBranchDefault();
+      switchTab("deploy");
+    }
+
+    if(action==="copy") await handleProjectUrl(id,"copy");
+    if(action==="open") await handleProjectUrl(id,"open");
+
+    if(action==="rename"){
+      const newName=prompt("Nama baru untuk proyek:",project.name);
+      if(newName===null || !newName.trim()) return;
+
+      await api("/api/rename",{
+        method:"POST",
+        body:JSON.stringify({projectId:id,name:newName.trim()})
+      });
+
+      toast("Nama proyek berhasil diubah.");
+      await Promise.all([loadProjects(),loadHistory()]);
+    }
+
+    if(action==="delete"){
+      const confirmation=prompt(
+        "PERINGATAN: Penghapusan proyek juga menghapus deployment, domain, dan environment variables.\n\nKetik nama proyek untuk mengonfirmasi:\n"+project.name
+      );
+
+      if(confirmation!==project.name) {
+        toast("Penghapusan dibatalkan.");
+        return;
+      }
+
+      await api("/api/delete",{
+        method:"POST",
+        body:JSON.stringify({projectId:id,confirmName:confirmation})
+      });
+
+      toast("Proyek berhasil dihapus.");
+      await Promise.all([loadProjects(),loadHistory()]);
+    }
+
+  }catch(error){
+    toast(error.message);
+  }
+});
+
+$("deployProject").addEventListener("change",updateBranchDefault);
+
+$("deployForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const projectId=$("deployProject").value;
+  const branch=$("deployBranch").value.trim();
+  const target=$("deployTarget").value;
+
+  if(!projectId || !branch){
+    toast("Pilih proyek dan isi branch.");
+    return;
+  }
+
+  const button=$("deployButton");
+  const result=$("deployResult");
+
+  button.disabled=true;
+  button.textContent="Mengirim deployment...";
+  result.innerHTML="";
+
+  try{
+    const data=await api("/api/deploy",{
+      method:"POST",
+      body:JSON.stringify({projectId,branch,target})
+    });
+
+    const d=data.deployment||{};
+    const url=d.url
+      ? (d.url.startsWith("http")?d.url:"https://"+d.url)
+      : "";
+
+    result.innerHTML=`
+      <div class="result">
+        <div class="result-title">Deployment berhasil dikirim</div>
+        <div class="small muted">
+          Status: ${esc(d.state||"QUEUED")}
+        </div>
+        ${url?`<a class="result-url" href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>`:""}
+        <div class="project-actions">
+          ${url?`<button class="btn small" id="copyResult">Salin URL</button>`:""}
+          ${url?`<a class="btn small primary" href="${esc(url)}" target="_blank" rel="noopener">Buka Website</a>`:""}
+          <a class="btn small" href="${esc(d.inspectorUrl||"https://vercel.com/dashboard")}" target="_blank" rel="noopener">Detail Deployment</a>
+        </div>
+      </div>
+    `;
+
+    if(url){
+      $("copyResult").addEventListener("click",async()=>{
+        await navigator.clipboard.writeText(url);
+        toast("URL berhasil disalin.");
+      });
+    }
+
+    toast("Permintaan deployment terkirim.");
+    await loadHistory();
+
+  }catch(error){
+    result.innerHTML=`
+      <div class="result">
+        <div class="result-title" style="color:var(--red)">Deployment gagal dikirim</div>
+        <div class="small">${esc(error.message)}</div>
+      </div>
+    `;
+    toast(error.message);
+    await loadHistory();
+  }finally{
+    button.disabled=false;
+    button.textContent="Mulai Deployment";
+  }
+});
+
+$("searchProject").addEventListener("input",renderProjects);
+
+$("refreshHistory").addEventListener("click",async()=>{
+  try{
+    await loadHistory();
+    toast("Riwayat diperbarui.");
+  }catch(error){toast(error.message);}
+});
+
+(async()=>{
+  try{
+    await api("/api/session");
+    await loadApp();
+  }catch(error){
+    showLogin();
+  }
+})();
+</script>
+</body>
+</html>
