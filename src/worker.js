@@ -184,12 +184,35 @@ async function getDeployments(env, projectId) {
   }));
 }
 
-function deploymentResponse(d) {
+/* ============================================================
+   OTOMATISASI: Matikan proteksi Vercel Authentication
+   ============================================================ */
+async function disableProtection(env, idOrName) {
+  try {
+    await vercel("/v9/projects/" + encodeURIComponent(idOrName), env, {
+      method: "PATCH",
+      body: { 
+        ssoProtection: null, 
+        passwordProtection: null 
+      }
+    });
+  } catch (error) {
+    console.error("Gagal mematikan proteksi:", error.message);
+  }
+}
+
+/* ============================================================
+   PERBAIKAN: Tampilkan URL bersih (nama-proyek.vercel.app)
+   ============================================================ */
+function deploymentResponse(d, projectName) {
+  let cleanUrl = "";
+  if (projectName) {
+    cleanUrl = `https://${projectName}.vercel.app`;
+  }
+
   return {
     id: d.id || "",
-    url: d.url
-      ? (d.url.startsWith("http") ? d.url : "https://" + d.url)
-      : "",
+    url: cleanUrl || (d.url ? (d.url.startsWith("http") ? d.url : "https://" + d.url) : ""),
     state: d.readyState || d.state || "QUEUED",
     inspectorUrl: d.inspectorUrl || ""
   };
@@ -199,14 +222,12 @@ function deploymentResponse(d) {
    PERBAIKAN: Upload file ke endpoint yang benar (/v2/now/files)
    ============================================================ */
 async function uploadFileToVercel(env, fileName, buffer) {
-  // Hitung SHA-1 digest (wajib untuk Vercel)
   const digest = await crypto.subtle.digest("SHA-1", buffer);
   const sha1 = Array.from(new Uint8Array(digest))
     .map(b => b.toString(16).padStart(2, "0"))
     .join("");
 
   const token = env.VERCEL_TOKEN;
-  // PERBAIKAN: Gunakan /v2/now/files, bukan /v2/files
   const url = new URL(API + "/v2/now/files");
   if (env.VERCEL_TEAM_ID) {
     url.searchParams.set("teamId", env.VERCEL_TEAM_ID);
@@ -469,6 +490,10 @@ async function handleAPI(request, env) {
           env,
           { method: "POST", body: payload }
         );
+        
+        // OTOMATIS: Matikan proteksi
+        await disableProtection(env, project.id);
+
         await saveHistory(env, {
           action: "Deploy",
           title: project.name,
@@ -479,7 +504,7 @@ async function handleAPI(request, env) {
         });
         return json({
           success: true,
-          deployment: deploymentResponse(result)
+          deployment: deploymentResponse(result, project.name) // Gunakan URL bersih
         });
       } catch (error) {
         await saveHistory(env, {
@@ -543,7 +568,6 @@ async function handleAPI(request, env) {
           );
         }
 
-        // Upload file binary ke Vercel API, dapatkan SHA
         const sha = await uploadFileToVercel(env, fileName, buffer);
         vercelFiles.push({
           file: fileName,
@@ -572,6 +596,10 @@ async function handleAPI(request, env) {
           env,
           { method: "POST", body: payload }
         );
+
+        // OTOMATIS: Matikan proteksi (pakai result.projectId atau name)
+        await disableProtection(env, result.projectId || name);
+
         await saveHistory(env, {
           action: "Deploy Files",
           title: name,
@@ -582,7 +610,7 @@ async function handleAPI(request, env) {
         });
         return json({
           success: true,
-          deployment: deploymentResponse(result)
+          deployment: deploymentResponse(result, name) // Gunakan URL bersih
         });
       } catch (error) {
         await saveHistory(env, {
@@ -631,7 +659,7 @@ async function handleAPI(request, env) {
         });
         return json({
           success: true,
-          deployment: deploymentResponse(result)
+          deployment: deploymentResponse(result, project.name)
         });
       } catch (error) {
         await saveHistory(env, {
