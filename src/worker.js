@@ -469,13 +469,8 @@ async function handleAPI(request, env) {
     }
 
     // ============================================================
-    // ✅ BARU: DEPLOY DARI FILE UPLOAD (multipart/form-data)
+    // DEPLOY DARI FILE UPLOAD (multipart/form-data)
     // Endpoint: POST /api/deploy-files
-    // Form fields:
-    //   name       (string, wajib)  → nama proyek
-    //   projectId  (string, opsional) → kalau proyek sudah ada
-    //   target     ("production" | "preview")
-    //   files      (File[], wajib)  → file yang diupload
     // ============================================================
     if (path === "/api/deploy-files" && method === "POST") {
       const contentType = request.headers.get("Content-Type") || "";
@@ -542,8 +537,9 @@ async function handleAPI(request, env) {
       if (projectId) payload.project = projectId;
 
       try {
+        // PERBAIKAN: Menambahkan ?skipAutoDetectionConfirmation=1
         const result = await vercel(
-          "/v13/deployments",
+          "/v13/deployments?skipAutoDetectionConfirmation=1",
           env,
           { method: "POST", body: payload }
         );
