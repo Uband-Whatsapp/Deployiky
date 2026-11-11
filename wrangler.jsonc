@@ -1,9 +1,13 @@
-
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "ekk-vercel-manager",
   "main": "src/worker.js",
   "compatibility_date": "2026-11-11",
+  
+  // TAMBAHKAN BARIS INI:
+  // Agar variabel rahasia (ADMIN_PASSWORD, VERCEL_TOKEN) di dashboard tidak terhapus saat deploy dari GitHub
+  "keep_vars": true, 
+
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
